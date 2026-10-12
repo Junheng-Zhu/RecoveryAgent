@@ -1,0 +1,11 @@
+{
+  "dataset_version": "0.3-B",
+  "iid_variant_rule": "mod6=4 validation;mod6=5 test;else train",
+  "ood_families": [
+    "git_compensating_commit",
+    "sqlite_dependency",
+    "sqlite_relink"
+  ],
+  "seed": 42,
+  "variants": 6
+}

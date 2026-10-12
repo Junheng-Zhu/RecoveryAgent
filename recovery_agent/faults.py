@@ -6,15 +6,19 @@ FAULT_TYPES = ("parameter", "state_missing", "transient", "planning_order")
 
 class FaultInjector:
     """One-shot faults at a specified 1-based tool step; stable across processes."""
+    # 配置一次性故障类型、固定 seed 和从 1 开始的工具调用步骤，并初始化触发状态。
     def __init__(self, fault_type, seed=0, step=1):
         if fault_type not in FAULT_TYPES or step < 1:
             raise ValueError("Invalid fault specification")
         self.fault_type, self.seed, self.step = fault_type, seed, step
         self.reset()
 
+    # 清除已触发标记，使 Reset 后可以在相同步骤重新注入故障。
     def reset(self):
         self.fired = False
 
+    # 仅在指定步骤首次触发；稳定诊断 token 由 seed/step 派生，供重放核对。
+    # 参数和瞬时错误发生在工具修改前；状态缺失会真实移除资源，顺序错误会设置写入前置条件。
     def before(self, env, call, step):
         if self.fired or step != self.step:
             return

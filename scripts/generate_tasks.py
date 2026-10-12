@@ -4,6 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from recovery_agent.dataset import generate_tasks, save_tasks
 
+# 解析数量、seed 和输出路径，生成 v0.1 任务及固定模板族的 train/val/test 文件。
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--count", type=int, default=40)

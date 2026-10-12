@@ -8,6 +8,8 @@ from .models import ToolCall
 from .policy import PolicyInput
 from .verifier import Verifier
 
+# 运行一个在线恢复 episode：先执行前置动作与失败调用，再在固定预算内询问策略。
+# Oracle 仅能在认证模式运行；给普通策略的 PolicyInput 不包含任务验收答案。
 def run_episode(task, policy, mode="evaluation"):
     if mode not in ("evaluation", "oracle_certification"):
         raise ValueError("Invalid run mode")
@@ -36,6 +38,7 @@ def run_episode(task, policy, mode="evaluation"):
         steps, repeated = 0, 0
         failures = {(first.name, json.dumps(first.arguments, sort_keys=True), result.error.code)}
         for index in range(task["max_recovery_steps"]):
+            # 只复制公开字段给策略，避免可变对象引用和特权验收信息泄漏。
             public = PolicyInput(copy.deepcopy(task["goal"]), copy.deepcopy(first),
                                  tuple(copy.deepcopy(observations)),
                                  task["max_recovery_steps"] - index)
@@ -47,6 +50,7 @@ def run_episode(task, policy, mode="evaluation"):
             result = env.execute(call)
             steps += 1
             if not result.ok:
+                # 重复失败按工具名、规范化参数和错误码比较，不依赖诊断 token。
                 signature = (call.name, json.dumps(call.arguments, sort_keys=True), result.error.code)
                 repeated += int(signature in failures)
                 failures.add(signature)
@@ -60,6 +64,8 @@ def run_episode(task, policy, mode="evaluation"):
                 "repeated_failures": repeated, "verification": asdict(verdict),
                 "events": events, "final_state": env.snapshot(), "audit": copy.deepcopy(env.audit)}
 
+# 在全新环境按记录的调用顺序执行，逐项比较工具结果、最终状态、账本与 Verifier。
+# 重放不再次调用 Policy，验证的是已记录调用序列的确定性。
 def replay(task, trace):
     fault = task["fault"]
     with Environment(task["initial_state"],
@@ -75,6 +81,8 @@ def replay(task, trace):
             raise ValueError("Replay verdict mismatch")
         return True
 
+# 汇总恢复成功率、调用步数、重复失败率和副作用；起始失败调用不计入恢复步数。
+# 成功任务为空时平均成功步数为 None，避免用 0 伪装未定义的指标。
 def summarize(traces):
     n = len(traces)
     if not n:
@@ -89,6 +97,7 @@ def summarize(traces):
             "extra_side_effects": sum(t["verification"]["extra_side_effects"] for t in traces),
             "unauthorized_modifications": sum(t["verification"]["unauthorized_modifications"] for t in traces)}
 
+# 为每个任务创建策略并运行 episode，再输出 JSONL 轨迹和总体/分故障报告。
 def evaluate(tasks, factory, output, mode="evaluation"):
     traces = [run_episode(task, factory(task), mode) for task in tasks]
     output = Path(output)

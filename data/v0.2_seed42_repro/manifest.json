@@ -1,0 +1,81 @@
+{
+  "artifacts": {
+    "config.json": "fc88749fe6aa91200c92a559fbbee035112029da2f329008c209fc0e2fcad11d",
+    "preferences/train.jsonl": "87b0aa596fd435fb65de02b543252995c85810ab43c8e947ea3361c5342a328a",
+    "preferences/val.jsonl": "db40394530e33be9a550e5b365ef343d72abf904938426a8f361959349aec8a8",
+    "quality_report.json": "848b2f1a2cc44e84b3c786ca8688fcefafb3d3442ade27434c31abdc70df70cd",
+    "report.json": "555ffad53ca44760d88aef15fc8384254633067d86995aa02f4d55e0a4f15337",
+    "sft/train.jsonl": "2561f2e6082e8fb3e038679d44577e7f6b983226e57a42c8922f7ce725f32db7",
+    "sft/val.jsonl": "23e5b4151548d86a03d074f622bf236a882f17d12e778a3c687d843956fb55d9",
+    "tasks/test.jsonl": "04178f9ec0edb8875333862573f990221166c19fdf7f8082996b453299611934",
+    "tasks/train.jsonl": "85bafd0b9fffdf4bc88302bcb63cae08f51a94f81d05fb47f15a19a93fe90329",
+    "tasks/val.jsonl": "982c1b476cd93ff2a777529715a0ed3fe0d2876d418d4f7e9f2b9ac90e7d73ba",
+    "trajectories/test.jsonl": "c8a00eacdbe48c0424eb5f2d5f193ab5fb86a5307b7dfe715aa6bb582cc29264",
+    "trajectories/train.jsonl": "5765b04a6e5258effd91cfaa488eaaf359e7600bc6e218f58808e847955b433f",
+    "trajectories/val.jsonl": "4124e678549b268a61b11420f874c9008aa03ba9cb9bc30b68ad3d86f2b39ac6"
+  },
+  "config": {
+    "counts": {
+      "test": 200,
+      "train": 800,
+      "val": 200
+    },
+    "environments": {
+      "test": [
+        {
+          "file_prefix": "archive/",
+          "id": "layout_e",
+          "table_prefix": "archive_"
+        },
+        {
+          "file_prefix": "reports/",
+          "id": "layout_f",
+          "table_prefix": "report_"
+        }
+      ],
+      "train": [
+        {
+          "file_prefix": "workspace/",
+          "id": "layout_a",
+          "table_prefix": "app_"
+        },
+        {
+          "file_prefix": "documents/",
+          "id": "layout_b",
+          "table_prefix": "live_"
+        }
+      ],
+      "val": [
+        {
+          "file_prefix": "staging/",
+          "id": "layout_c",
+          "table_prefix": "stage_"
+        },
+        {
+          "file_prefix": "inbox/",
+          "id": "layout_d",
+          "table_prefix": "inbox_"
+        }
+      ]
+    },
+    "families": {
+      "test": [
+        "arithmetic_report"
+      ],
+      "train": [
+        "copy",
+        "record_update"
+      ],
+      "val": [
+        "uppercase"
+      ]
+    },
+    "seed": 42,
+    "version": "0.2.0"
+  },
+  "config_hash": "ef006b46ee60557c4009f0f4b6d866ba237963967ebdd3684039318de2aed5fe",
+  "dataset_version": "0.2.0",
+  "pipeline_config": {
+    "preference_decisions": 1
+  }
+}

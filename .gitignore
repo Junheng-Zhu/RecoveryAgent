@@ -3,3 +3,7 @@ __pycache__/
 .pytest_cache/
 outputs/
 *.pyc
+
+.env
+.env.*
+!.env.example

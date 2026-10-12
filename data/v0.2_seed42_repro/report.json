@@ -1,0 +1,164 @@
+{
+  "preference_statistics": {
+    "accepted_reasons": {
+      "chosen_finishes_rejected_stops_unsatisfied": 1000,
+      "rejected_has_irreversible_audit_violation": 750
+    },
+    "candidate_types": {
+      "premature_stop": 1000,
+      "unrequested_write": 750
+    },
+    "decisions_per_task": 1,
+    "discard_reasons": {
+      "ambiguous_recoverable_failure": 1150,
+      "both_succeed_no_strict_preference": 1100,
+      "test_excluded": 200
+    },
+    "pair_counts": {
+      "train": 1400,
+      "val": 350
+    },
+    "rule": "verified chosen success vs terminal failure or immutable audit violation"
+  },
+  "quality": {
+    "causal_inputs_verified": 3300,
+    "duplicate_samples": 0,
+    "leakage_validation": "exact public projection; excludes hidden seeds/tokens, expected state, plans and future results",
+    "passed": true,
+    "preference_pairs": {
+      "train": 1400,
+      "val": 350
+    },
+    "preference_pairs_execution_verified": 1750,
+    "sft_samples": {
+      "train": 2600,
+      "val": 700
+    },
+    "split_leakage": false,
+    "tasks": 1200,
+    "test_training_samples": 0,
+    "tools_schema_verified": true,
+    "trajectory_replays_verified": 1200
+  },
+  "sft_statistics": {
+    "discard_reasons": {
+      "test_excluded": 200
+    },
+    "sample_counts": {
+      "train": 2600,
+      "val": 700
+    },
+    "terminal_targets": 1000
+  },
+  "task_statistics": {
+    "test": {
+      "count": 200,
+      "environments": {
+        "layout_e": 100,
+        "layout_f": 100
+      },
+      "fault_types": {
+        "parameter": 50,
+        "planning_order": 50,
+        "state_missing": 50,
+        "transient": 50
+      },
+      "reference_plan_lengths": {
+        "2": 200
+      },
+      "template_families": {
+        "arithmetic_report": 200
+      }
+    },
+    "train": {
+      "count": 800,
+      "environments": {
+        "layout_a": 400,
+        "layout_b": 400
+      },
+      "fault_types": {
+        "parameter": 200,
+        "planning_order": 200,
+        "state_missing": 200,
+        "transient": 200
+      },
+      "reference_plan_lengths": {
+        "2": 700,
+        "4": 100
+      },
+      "template_families": {
+        "copy": 400,
+        "record_update": 400
+      }
+    },
+    "val": {
+      "count": 200,
+      "environments": {
+        "layout_c": 100,
+        "layout_d": 100
+      },
+      "fault_types": {
+        "parameter": 50,
+        "planning_order": 50,
+        "state_missing": 50,
+        "transient": 50
+      },
+      "reference_plan_lengths": {
+        "2": 150,
+        "4": 50
+      },
+      "template_families": {
+        "uppercase": 200
+      }
+    }
+  },
+  "trajectory_statistics": {
+    "test": {
+      "count": 200,
+      "decision_length_distribution": {
+        "3": 200
+      },
+      "extra_side_effects": 0,
+      "recovery_length_distribution": {
+        "2": 200
+      },
+      "replay_verified": 200,
+      "success_rate": 1.0,
+      "successful": 200,
+      "unauthorized_modifications": 0
+    },
+    "train": {
+      "count": 800,
+      "decision_length_distribution": {
+        "3": 700,
+        "5": 100
+      },
+      "extra_side_effects": 0,
+      "recovery_length_distribution": {
+        "2": 700,
+        "4": 100
+      },
+      "replay_verified": 800,
+      "success_rate": 1.0,
+      "successful": 800,
+      "unauthorized_modifications": 0
+    },
+    "val": {
+      "count": 200,
+      "decision_length_distribution": {
+        "3": 150,
+        "5": 50
+      },
+      "extra_side_effects": 0,
+      "recovery_length_distribution": {
+        "2": 150,
+        "4": 50
+      },
+      "replay_verified": 200,
+      "success_rate": 1.0,
+      "successful": 200,
+      "unauthorized_modifications": 0
+    }
+  },
+  "version": "0.2.0"
+}

@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "config.json": "67acc6102f9a75430177b424a071fba49c8113a539c40c250cdf02de9c1cfdce",
+    "iid_test.jsonl": "c0f975987cb2221e9d2ee3c96884367787c66e9346964c853adb56b62e294db8",
+    "iid_validation.jsonl": "cac039f30e65c79b78cbc0db1a7ada95cd7fba399b20beed427364b5a38577e0",
+    "ood.jsonl": "e393c9780c0c71faeb0476cc1bce42d38ef8d6d30663e490b1149646a93ba77f",
+    "tasks.jsonl": "09b09da3c4cf159d2153923a56fb6e6dcbc58949e8e5858aae53e0ddfcdc329f",
+    "train.jsonl": "aa250d8085ffa2e55c87a6280928634b1ba77cee0f9f9aea078a7206d77ddd4f"
+  },
+  "config": {
+    "dataset_version": "0.3-B",
+    "iid_variant_rule": "mod6=4 validation;mod6=5 test;else train",
+    "ood_families": [
+      "git_compensating_commit",
+      "sqlite_dependency",
+      "sqlite_relink"
+    ],
+    "seed": 42,
+    "variants": 6
+  },
+  "schema_hash": "78b8dd9dde18b3038404f7aa9c00c7fd4fa783ac5541b5c573e5b964669a64f8",
+  "task_digest": "ffb3f6b84747d6eb1121d650e2f298fe3db359c13aa324d24a1a3b1d0ae49e50"
+}

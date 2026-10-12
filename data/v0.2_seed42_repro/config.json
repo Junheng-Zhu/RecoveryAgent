@@ -1,0 +1,59 @@
+{
+  "counts": {
+    "test": 200,
+    "train": 800,
+    "val": 200
+  },
+  "environments": {
+    "test": [
+      {
+        "file_prefix": "archive/",
+        "id": "layout_e",
+        "table_prefix": "archive_"
+      },
+      {
+        "file_prefix": "reports/",
+        "id": "layout_f",
+        "table_prefix": "report_"
+      }
+    ],
+    "train": [
+      {
+        "file_prefix": "workspace/",
+        "id": "layout_a",
+        "table_prefix": "app_"
+      },
+      {
+        "file_prefix": "documents/",
+        "id": "layout_b",
+        "table_prefix": "live_"
+      }
+    ],
+    "val": [
+      {
+        "file_prefix": "staging/",
+        "id": "layout_c",
+        "table_prefix": "stage_"
+      },
+      {
+        "file_prefix": "inbox/",
+        "id": "layout_d",
+        "table_prefix": "inbox_"
+      }
+    ]
+  },
+  "families": {
+    "test": [
+      "arithmetic_report"
+    ],
+    "train": [
+      "copy",
+      "record_update"
+    ],
+    "val": [
+      "uppercase"
+    ]
+  },
+  "seed": 42,
+  "version": "0.2.0"
+}

@@ -4,6 +4,7 @@ from recovery_agent.environment import Environment
 from recovery_agent.faults import FaultInjector
 from recovery_agent.models import ToolCall
 
+# 将故障设在第 2 步，验证触发位置、Reset 后的错误结果和故障后状态一致。
 @pytest.mark.parametrize("task", generate_tasks(), ids=lambda t: t["id"])
 def test_fault_determinism_reset_and_one_shot(task):
     fault = task["fault"]
@@ -20,6 +21,7 @@ def test_fault_determinism_reset_and_one_shot(task):
         assert env.execute(action).to_dict() == first.to_dict()
         assert env.snapshot() == snapshot
 
+# 验证不同 seed 的诊断 token 不同，瞬时故障只触发一次，非法配置被拒绝。
 def test_seed_changes_diagnostic_and_invalid_config():
     task = generate_tasks()[2]
     results = []

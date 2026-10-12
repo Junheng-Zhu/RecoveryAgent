@@ -13,6 +13,8 @@ SCHEMAS = {
     "calculate": ({"expression"}, set()),
 }
 
+# 校验工具名、必填/可选字段及参数类型；数据库更新值必须能表示为有限 JSON。
+# 这里只做结构校验，资源是否存在以及能否修改由 Environment 在执行时检查。
 def validate(call):
     if call.name not in SCHEMAS:
         raise ToolError("UNKNOWN_TOOL", "Unknown tool")
@@ -35,17 +37,21 @@ def validate(call):
         except (TypeError, ValueError):
             raise ToolError("INVALID_ARGUMENT", "Values must be finite JSON")
 
+# 限定相对 POSIX 路径，拒绝盘符、反斜杠、绝对路径和 .. 路径穿越。
 def safe_path(path):
     p = PurePosixPath(path)
     if not path or p.is_absolute() or ".." in p.parts or "\\" in path or ":" in path:
         raise ToolError("INVALID_ARGUMENT", "Unsafe relative path", field="path")
     return p.as_posix()
 
+# 通过 AST 解释数值表达式，仅支持数值常量及 +、-、*、/，不执行 Python eval。
+# 表达式过长、非法语法、除零或非有限结果统一转为参数错误。
 def calculate(expression):
     if len(expression) > 200:
         raise ToolError("INVALID_ARGUMENT", "Expression too long")
     ops = {ast.Add: operator.add, ast.Sub: operator.sub,
            ast.Mult: operator.mul, ast.Div: operator.truediv}
+    # 递归解释允许的 AST 节点；bool、函数调用、属性访问和未授权运算符都会被拒绝。
     def visit(node):
         if isinstance(node, ast.Constant) and type(node.value) in (int, float):
             return node.value

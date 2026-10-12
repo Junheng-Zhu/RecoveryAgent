@@ -11,6 +11,8 @@ SPLITS = {f: "train" for f in FAMILIES}
 SPLITS.update(upper_label="val", sum_stock="val",
               record_quota="test", ratio_summary="test")
 
+# 构建一个可重复的参数化任务，同时生成初始状态、失败动作、期望状态和参考计划。
+# parameter 任务真实改坏字段名；允许修改清单供 Verifier 使用，属于特权验收信息。
 def make_task(family, fault, variant, seed):
     rng = random.Random(f"{seed}:{family}:{variant}")
     number = rng.randint(2, 10000) + variant * 10001
@@ -74,18 +76,21 @@ def make_task(family, fault, variant, seed):
             "recoverable": True, "allowed_mutations": permitted,
             "reference_plan": plan, "schema_version": "0.1"}
 
+# 按模板族与四类故障循环生成 v0.1 任务，超过 40 个时增加参数变体。
 def generate_tasks(count=40, seed=42):
     if count < 1:
         raise ValueError("count must be positive")
     return [make_task(FAMILIES[(i // 4) % 10], FAULT_TYPES[i % 4],
                       i // 40, seed) for i in range(count)]
 
+# 逐行写入完整任务对象；每行独立 JSON，便于后续批处理和版本保存。
 def save_tasks(path, tasks):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("".join(json.dumps(t, ensure_ascii=False, sort_keys=True) + "\n"
                            for t in tasks), encoding="utf-8")
 
+# 读取任务 JSONL，忽略空行；v0.2 的严格格式检查使用专门的质量模块。
 def load_tasks(path):
     return [json.loads(line) for line in Path(path).read_text(encoding="utf-8").splitlines()
             if line.strip()]

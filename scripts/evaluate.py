@@ -8,6 +8,8 @@ from recovery_agent.policy import RulePolicy, RetryPolicy, StopPolicy
 from recovery_agent.oracle import Oracle
 from recovery_agent.runner import evaluate, replay
 
+# 解析评测策略与 split，执行恢复评测；可选 Replay 并保存验证数量。
+# Oracle 使用独立认证模式，不能把其成功率当作普通模型评测结果。
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tasks", default="data/tasks/smoke.jsonl")
