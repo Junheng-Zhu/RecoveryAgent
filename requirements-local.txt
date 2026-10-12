@@ -1,0 +1,2 @@
+# Runtime uses Python standard library only. Tests require pytest.
+pytest>=8,<10
