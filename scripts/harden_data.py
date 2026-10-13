@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from recovery_agent.hardening.tasks import freeze,validate_frozen
-from recovery_agent.hardening.protocol import schema_hash
+from recovery_agent.hardening.protocol import schema_hash,STOP_PROTOCOLS
 from recovery_agent.hardening.batch import collect,compare_protocols,review_collection
 from recovery_agent.hardening.training import export
 from recovery_agent.hardening.quality import validate_collection,import_legacy
@@ -20,6 +20,8 @@ def main():
     run=sub.add_parser("collect")
     run.add_argument("--dataset",default="data/v0.3b_seed42_final")
     run.add_argument("--output",default="outputs/v0.3b_mock")
+    run.add_argument("--stop-protocol",choices=STOP_PROTOCOLS,default="legacy")
+    run.add_argument("--stop-on-verified-success",action="store_true")
     run.add_argument("--online",action="store_true");run.add_argument("--resume",action="store_true")
     run.add_argument("--allow-floating-model",action="store_true")
     run.add_argument("--count",type=int);run.add_argument("--task-id")
@@ -57,7 +59,8 @@ def main():
         _,_,report=collect(selected,args.output,online=args.online,resume=args.resume,seed=args.seed,clean=args.clean,
                           max_tool_calls=args.max_tool_calls,episode_requests=args.episode_requests,
                           max_requests=args.max_requests,max_tokens=args.max_tokens,max_total_tokens=args.max_total_tokens,
-                          max_cost_cny=args.max_cost_cny,timeout=args.timeout,allow_floating=args.allow_floating_model,clean_kind=args.clean_kind,temperature=args.temperature)
+                          max_cost_cny=args.max_cost_cny,timeout=args.timeout,allow_floating=args.allow_floating_model,clean_kind=args.clean_kind,temperature=args.temperature,
+                          stop_protocol=args.stop_protocol,stop_on_verified_success=args.stop_on_verified_success)
         report.pop("by_task",None)
         print(json.dumps(report,indent=2))
     elif args.command=="export":

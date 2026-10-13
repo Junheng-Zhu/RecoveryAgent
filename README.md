@@ -585,3 +585,381 @@ v0.3-B 实现与主要验收已完成，以下为本轮已记录的结果：
 验收报告：`outputs/v0.3b_acceptance.json`。
 后续按上方命令由用户显式触发 50–100 条 Train 轨迹采集，再检查 tokenizer/chat template 与最后 Assistant 的 loss mask。
 可进入 A100 Baseline/格式验证准备，当前真实数据量尚不足以进行正式 LoRA-SFT。
+
+## v0.3-C — Recovery Termination & Tool Efficiency
+
+本阶段只增加停止协议、可选终止检查及离线诊断，不修改工具 Schema、业务执行、
+Environment、Verifier、Fault Injector、任务模板或冻结数据。原有指标口径保持不变。
+真实 Teacher10 原始轨迹不覆盖、不清洗；新报告写入独立目录。
+
+### 配置与兼容性
+
+- `--stop-protocol legacy` 是默认值，Prompt 和原实验 session 配置保持兼容。
+- `--stop-protocol termination-v0.3c-1` 加入固定公开指令：完成用户目标后停止工具
+  并返回完成消息；不要重复确认已经由可见结果建立的事实；目标未完成或有必要
+  不确定性时仍可诊断。只改 System 指令，不发送隐藏 Verifier、Expected State、
+  Oracle Plan、故障 seed 或私有账本信号。
+- `--stop-on-verified-success` 默认关闭。开启后每个工具（包括初始失败调用）
+  执行结束时检查现有完整 Verifier，成功即以 `runtime_verified_success` 结束。
+  一个 Assistant 批次中也会立即停止后续调用；未执行候选仍保留在原始 Response，
+  Audit 和已执行事件不回滚、不删改。此策略属于 Runtime-assisted，
+  不计入模型自主完成率，不将检查结果追加到 Prompt。
+- 新选项在 session / 轨迹的 `termination_protocol` 中独立记录，
+  使用不同输出目录；旧版本默认无新增协议配置，不覆盖既有实验。
+- v0.3-C 实验轨迹用于独立诊断；原 v0.3-B SFT exporter 的 Prompt 校验仍按 legacy
+  工作，不把新协议或 Runtime-assisted 轨迹直接当作旧版训练候选。
+
+### 五项新增指标
+
+成功一律由原 Verifier 同时检查完整最终状态和累计副作用账本。
+非法写入后，即使目标对象再次匹配，也不能算完整成功。逐前缀证据保存于
+`episodes.jsonl` 的 `verifier_prefixes`；Replay 核对每步结果、状态和最终 Audit。
+
+| 指标 | 口径与分母 |
+| --- | --- |
+| First Goal Achieved Step | 首次完整成功的已执行恢复工具步数；初始/失败前缀已满足目标为 0；从未成功为 null。平均值只使用曾成功 Episode。 |
+| Post-success Tool Calls | 首次完整成功后的实际恢复调用数，包含同一 Assistant 批次中的后续调用；从未成功记 0。总数与曾成功 Episode 的均值分别报告。 |
+| Model Stop Accuracy | 曾完整成功的模型自主模式 Episode 中，以有效 assistant_text 主动结束且最终完整成功的比例。允许晚停，其延迟由 Post-success Calls 表达，不把晚停说成及时停止。 |
+| Success Before Budget Exhaustion | 预算终止处理前，合法执行前缀中是否曾完整成功；最后一个获准执行的工具动作也算，未要求仍有剩余配额。分母为同一停止策略的全部 Episode。 |
+| Autonomous Completion Rate | 模型自主模式下，assistant_text 主动结束且最终完整成功 / 该模式全部 Episode。Runtime-assisted 全部排除。 |
+
+Model Stop Accuracy 不等同于“成功后零调用”；一次合理确认也可能出现在完整成功之后。
+Post-success 调用计数本身不证明所有调用都无意义，不替换 v0.3-B 的行为分类指标。
+Runtime-assisted 与 Model-autonomous 使用独立分组和分母；Runtime 组的
+Model Stop Accuracy / Autonomous Completion Rate 为不可适用的 null。
+
+### 最小本地命令（无 API）
+
+```powershell
+Set-Location D:\pyproject\RecoveryAgent
+
+# 只读取原 Teacher10；不能把输出指向原采集目录，已有报告目录不覆盖
+python scripts/diagnose_termination.py --input outputs/v0.3b_teacher10 --output outputs/v0.3c_teacher10_diagnostic_new
+
+# 新停止 Prompt 的本地 Mock（保持原工具/任务）
+python scripts/harden_data.py collect --task-id 0.3-B-sqlite_primary_key-000 --stop-protocol termination-v0.3c-1 --output outputs/v0.3c_mock_prompt
+
+# 可选 Runtime-assisted Mock，默认配置仍然关闭
+python scripts/harden_data.py collect --task-id 0.3-B-sqlite_primary_key-000 --stop-protocol termination-v0.3c-1 --stop-on-verified-success --output outputs/v0.3c_mock_runtime
+python scripts/diagnose_termination.py --input outputs/v0.3c_mock_runtime --output outputs/v0.3c_mock_runtime_diagnostic
+
+python -m pytest -q tests/test_termination_v03c.py
+python -m pytest -q
+```
+
+上述 Mock 收集命令没有 --online，绝不调用真实 API。离线诊断入口根本没有 API 开关。
+报告包含 `episodes.jsonl`、`summary.json`、逐任务表 `report.md`，
+以及原任务/轨迹/session 的 SHA-256。
+
+### Teacher10 离线结论
+
+正式报告：`outputs/v0.3c_teacher10_diagnostic/`。以下只来自既有轨迹 Replay，
+没有重新请求模型；Teacher 模型 ID 为 qwen3.8-max-0902。
+
+| 任务（省略共同前缀 0.3-B-） | 首次成功步 | 成功后调用 | 最终成功 | 终止原因 |
+| --- | ---: | ---: | --- | --- |
+| git_multifile_revision-002 | 7 | 4 | 是 | assistant_text |
+| mixed_db_git_report-002 | 8 | 4 | 是 | tool_budget |
+| sqlite_delete_dependency-002 | 6 | 6 | 否 | tool_budget |
+| git_checkout_conflict-000 | 4 | 4 | 是 | tool_budget |
+| mixed_db_git_report-000 | 8 | 4 | 是 | tool_budget |
+| sqlite_primary_key-002 | 2 | 6 | 否 | tool_budget |
+| git_stage_missing-000 | 4 | 4 | 是 | tool_budget |
+| mixed_db_git_report-003 | 7 | 5 | 是 | request_budget |
+| sqlite_delete_dependency-001 | 8 | 4 | 否 | tool_budget |
+| git_no_change-003 | 0 | 8 | 是 | tool_budget |
+
+10/10 曾满足完整目标，最终仅 7/10 成功。首次成功平均 5.4 步；
+103 次恢复调用中，49 次在首次成功之后（均值 4.9）。
+3 个 SQLite Episode 完成操作后，又把总结写入未授权的 report.txt，
+违反“保留无关状态”的完整合同；原 Verifier 正确保留失败，不因数据库仍匹配而洗白。
+
+终止：assistant_text 1、tool_budget 8、request_budget 1。
+Model Stop Accuracy = 1/10（10%）；Autonomous Completion Rate = 1/10（10%）。
+Success Before Budget Exhaustion = 10/10（100%），包含最后合法动作的前缀成功。
+唯一主动停止的 Episode 也有 4 次成功后调用，并非成功后立即停下。
+git_no_change 初始已满足目标，故首次成功为 0，随后 8 次调用仍需人工判断必要性。
+这些是旧协议行为诊断，不能据此声称新 Prompt 或 Runtime 策略已改善真实模型表现。
+
+### 下一步真实 LLM 对照（本轮未执行）
+
+保持 Runtime-assisted 关闭，以原 Teacher10 为 legacy 对照；新协议只改变停止指令。
+固定同 10 个 Task ID/初始状态、qwen3.8-max-0902、seed=42、Schema Hash、
+temperature=None（相同模型服务默认值）、max_tokens=4096、timeout=90、
+每任务请求 12、工具上限 12（仍受任务自身预算限制）、
+全局请求 120、Token 400000、保守费用上限 20 元，使用独立输出目录。
+
+只有用户明确决定进行收费实验后，才运行下面的示例；本轮没有执行：
+```powershell
+$env:MODEL_NAME = 'qwen3.8-max-0902'
+python scripts/harden_data.py collect --online --group train --count 10 --seed 42 --stop-protocol termination-v0.3c-1 --output outputs/v0.3c_teacher10_new_stop --max-requests 120 --episode-requests 12 --max-tool-calls 12 --max-tokens 4096 --max-total-tokens 400000 --max-cost-cny 20 --timeout 90
+
+# 检查新旧数据/模型/预算/解码/Schema 一致，只允许 Prompt 版本不同
+python scripts/diagnose_termination.py --compare-first outputs/v0.3b_teacher10 --compare-second outputs/v0.3c_teacher10_new_stop
+python scripts/diagnose_termination.py --input outputs/v0.3c_teacher10_new_stop --output outputs/v0.3c_teacher10_new_stop_diagnostic
+```
+
+比较入口拒绝模型、任务摘要、预算、seed、Schema 或解码配置不一致，
+也拒绝把 Runtime-assisted 运行混入 Prompt A/B。先逐任务比较是否主动停止、
+成功后调用数和新增副作用，再看汇总均值；小样本结果不等于训练收益。
+Runtime-assisted 的部署策略对照需使用另一目录和单独统计，不替代模型自主停止测试。
+
+### v0.3-C 本地验收
+
+- 核心测试：`python -m pytest -q tests/test_termination_v03c.py`，5 passed（0.34 秒）。
+- 全量测试：`python -m pytest -q`，259 passed（371.72 秒）；日志：`outputs/v0.3c_pytest.log`。
+- 10 条原始轨迹全部通过离线 Replay；原数据及 Teacher10 目录的文件哈希保持不变。
+- 本轮没有真实 API 请求、训练、数据重生成或补充边界测试。
+- 验收摘要：`outputs/v0.3c_acceptance.json`；任务完成后结束 Desktop 操作。
+
+## v0.3-C.2 — Redundant Mutations & Termination Refinement
+
+仅新增独立离线归因与 System 停止指令，复用原 Replay / 完整 Verifier。
+Git/SQLite 工具、Audit 写入规则、allowed_resources、恢复预算、任务模板、
+Collector 和 Training Pipeline 均不修改。旧轨迹与旧指标保留原样。
+
+### 双轮 Teacher10 的逐任务证据
+
+离线输入：`outputs/v0.3b_teacher10/` 与 `outputs/v0.3c_teacher10_new_stop/`。
+独立输出：`outputs/v0.3c2_paired_teacher10/`：
+
+- `episodes.jsonl`：20 个 Episode 的首次完整成功、成功后调用、完整 Verifier、
+  失败原因及逐 Mutation 证据。包含实际 scoped state、新增 Audit、资源次数/契约
+  上限、调用前后 Verifier，不凭动作名称判定。
+- `pairs.jsonl`：同一 Task 的旧/新行为、调用数差异及标签增减。
+- `summary.json`：沿用原五项终止指标，另列新的诊断标签统计及源文件 SHA-256。
+- `report.md`：20 行逐任务表、10 对行为差异及重点 Git 任务的原始执行证据。
+
+| 指标 | Legacy | termination-v0.3c-1 |
+| --- | ---: | ---: |
+| 最终完整成功 | 7/10 | 7/10 |
+| 曾完整成功 | 10/10 | 9/10 |
+| 首次完整成功平均步数 | 5.4（10 个） | 5.333（9 个） |
+| 成功后调用总数 / 平均数 | 49 / 4.9 | 14 / 1.556 |
+| Model Stop Accuracy | 1/10 | 7/9 |
+| Autonomous Completion Rate | 1/10 | 7/10 |
+| assistant_text / tool_budget / request_budget | 1 / 8 / 1 | 9 / 1 / 0 |
+
+上述新旧真实轨迹已通过同任务、模型、Schema、预算、解码、seed 和 Runtime 开关
+的可比性检查。旧轮 3 个失败均为完成数据库工作后写入未经允许的 report.txt。
+新轮 2 个仍有同类未授权写入；另 1 个为下面的冗余暂存/额度超限。
+实际这 20 条没有独立可确认的 premature_stop 或 incomplete_recovery，
+不能把 3 个新轮失败统一解释为“Prompt 让模型提前停了”。
+
+### git_multifile_revision-002：不是提前停止
+
+初始 report.txt 的 revision=3，已经正确暂存；metadata.json 的 revision=2。
+初始化暂存属于任务初始状态，不占恢复 Audit 次数。任务对恢复中的 git:index
+只允许 1 个 Audit 事件，保持该契约不变。
+
+| 新轮恢复步骤 | 事实及证据 |
+| --- | --- |
+| 3：write_file(metadata.json) | 将 revision 修复为 3，是必要操作。 |
+| 4：git_add(report.txt) | Index before == after；真实新增 1 条 git:index Audit，计数 1/1。标签 redundant_state_mutation。 |
+| 5：git_add(metadata.json) | Index 实际变化，是必要暂存；累计第 2 条 git:index Audit，2 > 1。标签 mutation_budget_exceeded，extra_side_effects 从 0 增至 1。 |
+| 6：git_commit(publish) | 文件、Index、Tree、提交数、消息与工作区状态正确；state_matches=True，但完整 success=False，extra_side_effects=1、unauthorized_modifications=0。 |
+
+因此首次“完整成功”是 null，而首次“状态匹配”是第 6 步。
+失败链是额外 report 暂存先消耗额度，导致必要 metadata 暂存超限。
+Model 以完成消息结束并不能清除历史 Audit；继续查询也不能修复该账本污染。
+不把必要的第二次暂存说成冗余，也不放宽 Verifier 或增加任务额度。
+
+### 独立诊断标签（可同时存在）
+
+| 标签 | 判定口径 |
+| --- | --- |
+| redundant_state_mutation | 实际 Replay 中，已审计写操作的目标资源状态没有变化，且 Audit before/after 相同。一次无效重写也可以冗余；不要求之前有同名模型调用。 |
+| unauthorized_mutation | 新 Audit 资源不在任务允许资源中。与“允许资源次数超限”分开。 |
+| mutation_budget_exceeded | 允许资源的累计 Audit 事件次数超过原契约，包括没有改变内容的操作。 |
+| premature_stop | 模型以有效文本停止，最终目标状态未满足且没有账本污染；状态正确但账本超额不归为提前停止。 |
+| incomplete_recovery | 预算终止，且全部前缀始终没有完整成功。先成功后违规而失败不算这种情况。 |
+| uncertain | 资源范围无法可靠获取、Verifier 违规不能被现有证据解释，或失败仍无可靠归因。 |
+
+无变化不等于无成本或安全。例如把受保护文件重写成相同内容，仍可同时标记
+redundant_state_mutation 和 unauthorized_mutation，并保持原 Verifier 失败。
+上述标签不会回写原轨迹，也不会替换 v0.3-B 行为分类或 v0.3-C 原指标。
+
+### 三种 System 协议及最小本地复现
+
+保留 `legacy` 和 `termination-v0.3c-1` 的文本/默认行为，新增
+`termination-v0.3c-2`：依据已经观察到的资源状态判断写入必要性，避免重复
+暂存/文件写入/数据库更新/提交；完成全部明确要求和必要依赖后立即结束；
+单个工具成功不代表整个任务完成；不增加无关查询、总结文件或额外用户要求。
+仅追加固定 System 文本，不读取隐藏 Expected State、Reference Plan 或 Audit。
+Runtime-assisted Stop 默认仍关闭。
+
+```powershell
+Set-Location D:\pyproject\RecoveryAgent
+
+# 完整的 20 条配对离线诊断；新目录必须不存在，不修改原采集文件
+python scripts/diagnose_termination.py --input outputs/v0.3b_teacher10 --paired-second outputs/v0.3c_teacher10_new_stop --output outputs/v0.3c2_paired_teacher10_new
+
+# 原有 Collector 可直接选择 C.2；没有 --online 时仍为本地 Mock
+python scripts/harden_data.py collect --task-id 0.3-B-sqlite_primary_key-000 --stop-protocol termination-v0.3c-2 --output outputs/v0.3c2_mock
+
+python -m pytest -q tests/test_termination_v03c2.py
+python -m pytest -q
+```
+
+### 后续在线对照准备（本轮未执行）
+
+只在用户明确触发新收费实验时执行。与两份旧 Teacher10 保持相同的 Train 采样：
+seed=42、count=10、qwen3.8-max-0902、同一冻结数据、15 工具 Schema、
+temperature=None、max_tokens=4096、timeout=90、每任务请求 12、
+工具上限 12（仍受各任务原预算限制）、全局请求 120、Token 400000、
+保守费用上限 20 元。不要添加 --stop-on-verified-success。
+
+```powershell
+$env:MODEL_NAME = 'qwen3.8-max-0902'
+python scripts/harden_data.py collect --online --group train --count 10 --seed 42 --stop-protocol termination-v0.3c-2 --output outputs/v0.3c2_teacher10_new_stop --max-requests 120 --episode-requests 12 --max-tool-calls 12 --max-tokens 4096 --max-total-tokens 400000 --max-cost-cny 20 --timeout 90
+
+# 三方检查：只能 Prompt 版本不同；对比实际任务对象和返回的模型 ID
+python scripts/diagnose_termination.py --compare-first outputs/v0.3b_teacher10 --compare-second outputs/v0.3c_teacher10_new_stop --compare-third outputs/v0.3c2_teacher10_new_stop
+
+# 也可仅检查任意两种不同协议
+python scripts/diagnose_termination.py --compare-first outputs/v0.3c_teacher10_new_stop --compare-second outputs/v0.3c2_teacher10_new_stop
+python scripts/diagnose_termination.py --input outputs/v0.3c_teacher10_new_stop --paired-second outputs/v0.3c2_teacher10_new_stop --output outputs/v0.3c2_c1_vs_c2_diagnostic
+```
+
+比较器同时核对 Runtime-assisted 开关；不允许混合开关值。全部开启的运行会明确
+归入 runtime_assisted，不能报告为模型自主能力。原目录和新协议目录不得混用，
+resume 仍要求 session 一致。
+
+当前只能确认 C.1 降低了成功后调用，但整体最终成功率没有提高。
+C.2 能否减少重复暂存、未经要求的报告写入，且避免新出现的提前停止，
+仍需真实在线对照验证；本轮不宣称 C.2 带来模型或训练收益。
+
+### v0.3-C.2 本地验收
+
+- 4 项核心测试：`python -m pytest -q tests/test_termination_v03c2.py`，4 passed（21.05 秒）。
+- 一次全量测试：`python -m pytest -q`，263 passed（369.04 秒）；日志 `outputs/v0.3c2_pytest.log`。
+- 两轮共 20 条轨迹通过 Replay；原数据、真实轨迹、工具/Verifier/Audit、Collector、Training Pipeline 与旧测试文件哈希保持不变。
+- 本轮真实 API 请求为 0；C.2 的真实效果尚待用户显式触发对照实验。
+- 验收摘要：`outputs/v0.3c2_acceptance.json`。完成后结束 Desktop 操作。
+
+## v0.4-A：Qwen3-1.7B SFT 数据准备（CPU，未执行训练）
+
+新增独立入口 `scripts/prepare_qwen3_sft.py`，复用现有冻结任务、Replay、Verifier、
+行为诊断和 Prompt。未修改 Runtime、工具/权限、Verifier 或原始轨迹。
+默认只读本地 Tokenizer；不调用 Teacher/API，不下载模型权重。
+
+### 本次实际结果
+
+- 33 条真实 Teacher Episode，16 个独立任务；不同停止协议不算新任务。
+- 96 条已有 Oracle 参考轨迹和 33 条 Teacher 轨迹完成 Replay/Verifier 和因果 Prompt 检查。
+- Oracle：204 条可信决策，52 个 Train 任务、13 种机制。
+  旧导出 208 条，其中 4 条是完整目标已满足后的查询，本轮保守排除。
+- Teacher：84 条可信决策，11 个 Train 任务、7 种机制，模型 ID 均为 `qwen3.8-max-0902`。
+  Legacy / C.1 / C.2 分别保留 30 / 40 / 14 条。
+- Oracle 的 Git / SQLite / Mixed 为 108 / 72 / 24；Teacher 为 27 / 8 / 49。
+- Oracle 工具调用 / 最终回答为 152 / 52；Teacher 为 72 / 12。
+- Token P50 / P95 / P99 / Max：Oracle 1591 / 2017 / 2050 / 2060；
+  Teacher 1836 / 2403 / 2848 / 2848；合计 1655 / 2131 / 2430 / 2848。
+- `max_seq_length=8192` 下超长为 0。官方 `config.json` 的原生窗口为 40960，
+  超出该窗口也为 0；Tokenizer 的 `model_max_length=131072` 单独记录，不当作原生模型窗口。
+- 有效监督 Token：Oracle 4294（1.28%）、Teacher 3654（2.30%）。
+- 导出重复样本、跨 Split 泄漏、无效会话均为 0。原始来源保持原哈希。
+- 状态 `CPU_DATA_READY` 不代表已验证 GPU 训练、模型收益或吞吐。
+
+### 环境与最小命令
+
+新增依赖仅用于 Tokenizer/Jinja，不包含 PyTorch 或训练框架：
+
+```powershell
+cd D:\pyproject\RecoveryAgent
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements-tokenizer.txt
+$env:USE_TORCH = '0'
+$env:USE_TF = '0'
+$env:USE_FLAX = '0'
+
+# 本地官方分词文件，严格离线；输出必须为新目录。
+python scripts/prepare_qwen3_sft.py --tokenizer assets/tokenizers/Qwen3-1.7B --output outputs/v0.4a_reproduce --max-seq-length 8192
+
+# 无需 Tokenizer 依赖；审计/转换完成但退出码 2，Readiness 为 BLOCKED。
+python scripts/prepare_qwen3_sft.py --audit-only --output outputs/v0.4a_audit_only
+
+# HF 模型 ID：显式允许下载分词/配置文件，固定官方 commit；不下载权重。
+python scripts/prepare_qwen3_sft.py --tokenizer Qwen/Qwen3-1.7B --revision 70d244cc86ccca08cf5af4e1e306ecf908b1ad5e --allow-tokenizer-download --output outputs/v0.4a_from_hf
+
+# 默认 Oracle/Teacher 分开；显式 --mixed 才生成可信合并文件并去重。
+python scripts/prepare_qwen3_sft.py --tokenizer assets/tokenizers/Qwen3-1.7B --mixed --output outputs/v0.4a_explicit_mixed
+```
+
+官方 Tokenizer 位于 `assets/tokenizers/Qwen3-1.7B/`，只有 `tokenizer.json`、
+`tokenizer_config.json`、`vocab.json`、`merges.txt`、`config.json` 和下载元数据。
+仓库 revision、文件/模板哈希及版本写入 `token_stats.json`。
+模板直接来自官方 [Qwen3-1.7B](https://huggingface.co/Qwen/Qwen3-1.7B)，未手写或修改。
+依赖缺失、下载失败或模板不兼容时保留审计和会话 JSONL，明确 Blocked，
+不用 Mock 结果代替真实模板验证。
+
+### 筛选与格式
+
+输出 `outputs/v0.4a_training_readiness/`：
+
+| 文件 | 内容 |
+| --- | --- |
+| `source_audit.json` | 来源、原文件哈希、逐轨迹证据、排除原因、任务/机制覆盖 |
+| `oracle_sft.jsonl` | 可信 Oracle 决策 |
+| `teacher_sft.jsonl` | 可信真实 Teacher 决策 |
+| `mixed_sft.jsonl` | 仅显式 --mixed 时生成，默认不存在 |
+| `token_stats.json` | 实际长度/监督比例、超长清单、版本和模板能力 |
+| `mask_examples.json` | 真实多轮 Git 工具调用与 SQLite 最终回答的逐 Token/Label 对齐 |
+| `readiness_report.md` | 数据就绪报告及剩余事项 |
+
+样本含 `messages`、`tools`、`tool_bindings`、`input_ids`、`attention_mask`、
+`labels`，以及 source、model_id、task_id、protocol_version、trajectory_id、
+decision_index、dataset_version、split。证据仅是元数据，模型输入只用 messages/tools。
+
+要求完整 Episode 通过最终 Verifier，再逐决策检查执行及行为证据。
+工具错误、非法/不安全/冗余/无进展/uncertain、成功后调用及未执行调用组不监督。
+失败 Episode 保守整体排除，不补造或自动修复。正常成功自主停止消息保留；
+预算终止不补造最终回答。派生对照报告不重复计数。
+嵌套 legacy_v03a 派生样本单独统计，不混入冻结 v0.3-B 任务/Schema cohort。
+
+任务必须与冻结 Manifest 完全一致，候选只能来自 Train。
+`v03c2_eval_*` 是目录名，归属取决于冻结任务 Split，不能按目录名猜测。
+IID Validation / IID Test / OOD 不进入训练；OOD 机制与 Train 分离。
+模型输入不含目标动作的未来 Tool Result、Expected State、Oracle Plan、私有 Audit 或
+Verifier。历史失败动作是当时可见上下文，保留但不监督。
+
+### 官方模板与 Assistant-only Mask
+
+官方 AutoTokenizer，`enable_thinking=False`。模板支持多工具调用及返回，但不渲染
+call_id；原始 ID、调用组和参数保留在 JSONL，转换前严格校验 FIFO 返回对应关系。
+既有 Runtime 的历史为逐调用 Assistant/Tool 消息，转换保持真实可见历史；
+当前目标中的真实多工具调用仍作为一个 Assistant 消息保留，不错配或虚构历史。
+
+模板没有原生 generation-mask 标记，使用实际 Token 分段前缀对齐：
+
+1. 官方模板生成完整 IDs，并独立编码渲染文本确认一致。
+2. 当前决策前的官方 generation prompt 必须是完整 IDs 的精确前缀。
+3. 仅当前可信 Assistant 正文/工具调用与 im_end EOS（151645）参与 Loss。
+4. System / User / Tool / 历史 Assistant、generation header、空 thinking prefill 为 -100。
+5. 边界不一致或 EOS 缺失明确报错；不按字符串长度定位、不静默截断。
+
+每条只监督最后一条 Assistant，不把历史不可信动作当正确答案。
+长样本全部保留统计；--max-seq-length 只是报告阈值，强制长度限制的适配接口会拒绝截断。
+P50/P95/P99 使用 nearest-rank。人工复核可查看 mask_examples.json 的原始会话、
+逐 Token ID/Label、角色边界和工具绑定。
+
+### 测试与进入 LoRA-SFT 前的准备
+
+```powershell
+python -m pytest -q tests/test_qwen3_sft_preparation.py
+python -m pytest -q
+```
+
+新增一个测试文件、6 项测试。纯数据检查不依赖 Tokenizer；集成测试使用本地官方模板，
+不可用时明确 Skip/Blocked，不以模拟分词器冒充真实验证。
+
+Teacher 仅有 11 个可信独立任务，SQLite/部分机制覆盖不足。进入训练前需确定来源权重、
+长度策略及独立评测协议，在训练主机固定同一模板，确认 collator 不覆盖现有 labels，
+完成小批次读取与 Loss Mask 预检查。本阶段未实现训练程序。
+
+### v0.4-A actual acceptance
+
+- Focused: **6 passed in 15.54s**, using the real official tokenizer, no skips.
+- Full: **269 passed in 326.91s**; logs: outputs/v04a_focused_tests.log, outputs/v04a_full_tests.log.
+- Existing core, frozen datasets and original trajectories unchanged; paid API calls/training: 0.
+- Current fixed-cohort max length is 2848: 4096 is a candidate training context; the export threshold is 8192. Validate the collator and memory on the training host.

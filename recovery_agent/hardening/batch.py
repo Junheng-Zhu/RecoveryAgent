@@ -1,4 +1,5 @@
 import copy
+from functools import partial
 import json
 import os
 import re
@@ -8,7 +9,7 @@ from ..stateful.predictor import load_dotenv,LLMConfig,OnlinePredictor
 from ..data_pipeline.common import fingerprint,write_json,write_jsonl,read_jsonl
 from .tasks import VERSION
 from .runner import run_episode,OracleMock
-from .protocol import schema_hash
+from .protocol import schema_hash,STOP_PROTOCOLS
 from .analysis import summary
 
 def clean_control(task):
@@ -37,8 +38,9 @@ def clean_workflow(task):
 
 def collect(tasks,output,online=False,resume=False,seed=42,clean=False,max_tool_calls=12,
             episode_requests=16,max_requests=8,max_tokens=4096,max_total_tokens=80000,max_cost_cny=3,timeout=90,
-            allow_floating=False,progress=None,clean_kind="workflow",temperature=None):
+            allow_floating=False,progress=None,clean_kind="workflow",temperature=None,stop_protocol="legacy",stop_on_verified_success=False):
     # Reuse durable append, ownership lock, resume checks and the existing HTTP/budget implementation.
+    if stop_protocol not in STOP_PROTOCOLS: raise ValueError("Unknown stop protocol")
     output=Path(output)
     if (output/"review_manifest.json").exists(): raise ValueError("Derived review directory is not a collector destination")
     if clean: tasks=[(clean_control if clean_kind=="control" else clean_workflow)(t) for t in tasks]
@@ -58,7 +60,11 @@ def collect(tasks,output,online=False,resume=False,seed=42,clean=False,max_tool_
         session.update(config=config.public(),model_version_policy="snapshot" if pinned else "explicit_floating")
     else:
         factory=lambda task:OracleMock(task)
-    traces,_=shared_collect(tasks,factory,output,session,resume,clean,runner=run_episode,dataset_version=VERSION)
+    episode_runner=run_episode
+    if stop_protocol!="legacy" or stop_on_verified_success:
+        session["termination_protocol"]={"prompt_version":stop_protocol,"stop_on_verified_success":bool(stop_on_verified_success)}
+        episode_runner=partial(run_episode,stop_protocol=stop_protocol,stop_on_verified_success=stop_on_verified_success)
+    traces,_=shared_collect(tasks,factory,output,session,resume,clean,runner=episode_runner,dataset_version=VERSION)
     write_jsonl(output/"tasks.jsonl",tasks)
     report=summary(traces)
     write_json(output/"report.json",report)

@@ -16,15 +16,19 @@ from .predictor import MockPredictor, BudgetExceeded, redact
 
 READ_ONLY = {"list_files", "read_file", "query_table", "calculate", "git_status", "git_diff", "execute_select"}
 
-def replay(task, trace, environment_factory=None, verifier=None):
+def replay(task, trace, environment_factory=None, verifier=None, state_observer=None):
     # Replay recorded calls, not model requests. Include failure calls and side-effect accounting.
     with (environment_factory or StatefulEnvironment)(task) as env:
+        if state_observer:
+            state_observer(env, None)
         for event in trace["events"]:
             if state_id(env) != event["before_state_id"]:
                 raise ValueError("Replay before-state mismatch")
             result = env.execute(ToolCall(**event["call"])).to_dict()
             if result != event["result"] or state_id(env) != event["after_state_id"]:
                 raise ValueError("Replay result/state mismatch")
+            if state_observer:
+                state_observer(env, event)
         if env.snapshot() != trace["final_state"] or env.audit != trace["audit"]:
             raise ValueError("Replay final state/audit mismatch")
         if (verifier or verify)(task, env) != trace["verification"]:
@@ -32,7 +36,8 @@ def replay(task, trace, environment_factory=None, verifier=None):
         return True
 
 def run_episode(task, predictor, clean=False, max_tool_calls=8, max_requests=8,
-                environment_factory=None, verifier=None, prompt_builder=None, replay_function=None):
+                environment_factory=None, verifier=None, prompt_builder=None, replay_function=None,
+                stop_on_verified_success=False):
     # Extend the legacy episode protocol with model decisions; execution stays sequential and bounded.
     # Optional extension hooks keep the original defaults and all v0.3-A call sites unchanged.
     _Environment=environment_factory or StatefulEnvironment
@@ -83,7 +88,13 @@ def run_episode(task, predictor, clean=False, max_tool_calls=8, max_requests=8,
             initial = execute(ToolCall(**task["failed_action"], call_id="initial"), "failure")
             if initial["ok"]:
                 raise ValueError("Recovery task did not start with a failed call")
+        # Optional deployment/diagnostic stop; no private verifier signal enters the prompt.
+        runtime_stop = stop_on_verified_success and _verify(task, env)["success"]
+        if runtime_stop:
+            reason = "runtime_verified_success"
         for index in range(max_requests):
+            if runtime_stop:
+                break
             remaining = min(max_tool_calls, task["max_recovery_steps"]) - calls
             if remaining <= 0:
                 reason = "tool_budget"
@@ -135,6 +146,12 @@ def run_episode(task, predictor, clean=False, max_tool_calls=8, max_requests=8,
                     continue
                 calls += 1
                 execute(ToolCall(**candidate["call"]), "recovery")
+                if stop_on_verified_success and _verify(task, env)["success"]:
+                    runtime_stop = True
+                    reason = "runtime_verified_success"
+                    break  # Preserve remaining raw model calls, but do not execute them.
+            if runtime_stop:
+                break
         verdict = _verify(task, env)
         usage = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
         for d in decisions:
@@ -154,6 +171,8 @@ def run_episode(task, predictor, clean=False, max_tool_calls=8, max_requests=8,
                  "extra_tool_calls": max(0, calls-len(task["reference_plan"])),
                  "api_errors": sum(bool(d.get("error")) for d in decisions),
                  "collection_status": "budget_not_evaluated" if not decisions and reason == "global_api_budget" else "completed"}
+    if stop_on_verified_success:
+        trace["stop_on_verified_success"] = True
     trace["replay_verified"] = _replay(task, trace)
     return redact(trace, getattr(predictor, "secret", ""))
 
