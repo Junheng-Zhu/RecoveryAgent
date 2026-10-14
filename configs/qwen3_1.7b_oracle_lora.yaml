@@ -1,0 +1,26 @@
+# Effective model path resolves through RECOVERY_MODEL_PATH (/data/models/Qwen3-1.7B on server).
+model:
+  path: null
+  max_seq_length: 4096
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+training:
+  learning_rate: 0.0002
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  epochs: 2
+  seed: 42
+  gradient_checkpointing: true
+  dtype: bf16
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  save_steps: 10
+data:
+  source: oracle
+  path: null
+output:
+  run_name: qwen3_1.7b_oracle_lora
+  path: null
+  checkpoint_path: null

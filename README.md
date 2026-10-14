@@ -963,3 +963,199 @@ Teacher 仅有 11 个可信独立任务，SQLite/部分机制覆盖不足。进�
 - Full: **269 passed in 326.91s**; logs: outputs/v04a_focused_tests.log, outputs/v04a_full_tests.log.
 - Existing core, frozen datasets and original trajectories unchanged; paid API calls/training: 0.
 - Current fixed-cohort max length is 2848: 4096 is a candidate training context; the export threshold is 8192. Validate the collator and memory on the training host.
+
+## v0.4-B：Linux 单 GPU Workspace、LoRA-SFT 与 Base/SFT 评测
+
+本阶段交付代码和 Windows CPU 验证。未下载权重、安装 GPU 组件、执行训练或新增 Benchmark。
+旧 Agent Loop、Tool Runtime、Environment、Verifier、Fault Injector、工具 Schema、停止协议
+以及 v0.4-A 的 Token IDs/Labels 均保持不变。服务器的真实 Forward/Backward/Resume 和
+模型评测仍须手动验收，Mock 结果不能当模型能力。
+
+### B.0 路径与交付
+
+相对 CLI/配置路径统一基于项目根目录，与终端 cwd 无关。无环境变量时保持 Windows
+现有 data/outputs 默认值；服务器显式使用 `RECOVERY_DATA_ROOT=/data`。
+旧 CLI 只做路径解析适配，没有重新设计数据格式。绝对路径按原值处理；
+显式相对路径仍基于项目，配置的默认目录分别来自下列环境变量：
+
+| 配置 | 默认服务器位置 |
+| --- | --- |
+| `RECOVERY_MODEL_PATH` | /data/models/Qwen3-1.7B |
+| `RECOVERY_DATASET_PATH` | /data/datasets/recovery_agent |
+| `RECOVERY_SFT_PATH` | /data/datasets/recovery_agent/v0.4a_training_readiness |
+| `RECOVERY_FROZEN_PATH` | /data/datasets/recovery_agent/v0.3b_seed42_final |
+| `RECOVERY_OUTPUT_PATH` | /data/outputs/recovery_agent |
+| `RECOVERY_CHECKPOINT_PATH` | /data/checkpoints/recovery_agent |
+| `RECOVERY_CACHE_PATH` | /data/cache/huggingface |
+| `RECOVERY_TOKENIZER_PATH` | /data/models/Qwen3-1.7B |
+| `RECOVERY_DELIVERY_MANIFEST` | /data/datasets/recovery_agent/delivery_manifest.json |
+
+`configs/gpu_server.env.example` 仅由用户 source，不修改 .bashrc 或 Shell 配置。
+`setup_gpu_workspace.py` 幂等建目录，验证写权限，不搬迁/替换现有文件。
+`check_gpu_environment.py` 检查 CUDA、显存、BF16、依赖、Git、路径/权限和本地完整模型分片，
+记录驱动、版本与每个模型分片 SHA-256；缺失时返回退出码 2，不自动下载/安装。
+
+Windows 已生成 `outputs/v0.4b_delivery/delivery_manifest.json`，包含 18 个现有文件的大小、
+SHA-256、源位置和服务器目标位置。通过 code-server 手动交付：
+
+| 本地来源 | 服务器目标 |
+| --- | --- |
+| `data/v0.3b_seed42_final/` | /data/datasets/recovery_agent/v0.3b_seed42_final/ |
+| `outputs/v0.4a_training_readiness/` | /data/datasets/recovery_agent/v0.4a_training_readiness/ |
+| `outputs/v0.4b_delivery/delivery_manifest.json` | /data/datasets/recovery_agent/delivery_manifest.json |
+| `assets/tokenizers/Qwen3-1.7B/` 的原始分词/config 文件 | /data/models/Qwen3-1.7B/ |
+
+用户另行提供同一 Qwen3-1.7B 的本地 safetensors 权重及完整索引/分片。
+本轮无权重可交付，清单明确标注缺失；GPU 预检后才记录真实分片哈希。
+原始 tokenizer/config 和官方 chat template 必须匹配 v0.4-A 哈希，不静默接受另一版本。
+所有冻结来源和既有可信轨迹只读。
+
+### B.1 三个独立入口
+
+默认配置 `configs/qwen3_1.7b_oracle_lora.yaml`：r=16、alpha=32、dropout=0.05、
+LR=0.0002、batch=1、gradient accumulation=8、epochs=2、seed=42、
+gradient checkpointing=true、BF16、max_seq_length=4096。
+`model.path: null` 表示从 RECOVERY_MODEL_PATH/Workspace 获取路径，服务器有效值为
+/data/models/Qwen3-1.7B；可在 YAML 或 CLI 单独指定模型、数据、输出和 checkpoint 目录。
+
+- 默认仅训练 Oracle 204 条；Teacher 84 条保持独立，须显式 `--source teacher` 并选新输出。
+- 不调用 Tokenizer 重写数据，不追加 EOS，不裁剪/过滤超长样本，任何 SHA/来源/Split/Mask
+  校验失败都禁止训练。先检查两个独立 cohort，再选择一个；不自动合并。
+- Collator 按 Batch 最大真实长度右侧 Padding，padding label=-100，不补齐到 4096。
+- Causal LM labels 正确 shift 一位，仅 Assistant 正文/工具调用/结束 EOS 参与 token CE。
+  梯度累积按当前窗口真实监督 Token 总数归一化，末尾不足 8 个 batch 同样正确归一化。
+- 真实模型加载后逐层检查 self_attn 的 q/k/v/o 和 MLP gate/up/down 是否确为 Linear，
+  使用完整模块路径注入 LoRA；不存在则失败，不能靠名字假定模型结构。
+- 只允许 LoRA 参数训练。记录 loss、LR、有效监督 Token、梯度范数、step time、
+  allocated/reserved/peak GPU memory。GPU Smoke 检查有限 loss、非零有限 LoRA 梯度及参数更新。
+- checkpoint 在 optimizer update 边界原子发布，保存 Adapter、optimizer、scheduler、
+  Python/Torch/CUDA RNG 和采样 cursor。Resume 校验数据、模型、模板、超参、版本及文件哈希。
+  Ctrl-C 后使用最近完整 checkpoint；临时/部分 checkpoint 不可恢复。
+- 默认每 10 个更新保存一次，当前 Oracle 配置共 52 个 optimizer updates。
+  从旧 checkpoint 重放的日志保留独立 attempt_id，不把重新计算的步数当独立训练数据。
+- 最终 Adapter 附训练配置、数据 Manifest、Tokenizer Hash、run_contract；
+  推理使用原 Base Tokenizer，不另造模板。One-step Smoke Adapter 不当正式 SFT checkpoint。
+- BF16 不支持时明确失败；用户可手动选择 float32，并在训练与对照评测中保持同精度。
+  12 GiB 空闲显存是可配置的保守预检阈值，不是经过真实 GPU 标定的最低需求。
+
+Windows 本地：
+
+```powershell
+cd D:\pyproject\RecoveryAgent
+python scripts/setup_gpu_workspace.py --write-delivery
+python scripts/train_qwen3_lora.py --mode dry-run --output outputs/v0.4b_cpu_dryrun_reproduce
+python scripts/evaluate_local_model.py --execution mock --split train_smoke --output outputs/v0.4b_mock_reproduce
+python -m pytest -q tests/test_gpu_workspace_paths.py tests/test_lora_training_pipeline.py tests/test_local_model_evaluation.py
+python -m pytest -q
+```
+
+`--mode dry-run` 为默认，不 import torch、不加载模型、不启动训练。
+GPU One-step 只在 `--mode smoke` 执行；完整训练只在 `--mode train` 执行。
+
+### Linux GPU 主机手动启动
+
+项目放在 /data/RecoveryAgent。以下命令由用户在 code-server Terminal 手动执行；
+权重及交付数据须先到位，脚本不会自动获取。PyTorch CUDA wheel 版本按现有驱动选择，
+下面示例使用官方 cu126；无需 torchvision/torchaudio。Accelerate 是 PEFT loader 的依赖，
+未使用 Accelerator、分布式或 DeepSpeed。
+
+```bash
+cd /data/RecoveryAgent
+python3.11 -m venv /data/RecoveryAgent/.venv
+source /data/RecoveryAgent/.venv/bin/activate
+source configs/gpu_server.env.example
+export PIP_CACHE_DIR=/data/cache/pip
+python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cu126
+python -m pip install -r requirements-gpu.txt
+
+python scripts/setup_gpu_workspace.py
+python scripts/check_gpu_environment.py --output /data/outputs/recovery_agent/gpu_preflight.json
+python scripts/train_qwen3_lora.py --mode dry-run
+
+# 先验证真实 Base 在三个 Train 任务的工具链路，不用 Val/Test 调试运行错误。
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split train_smoke --output /data/outputs/recovery_agent/base_train_smoke
+
+# 单 Batch Forward / Backward / Optimizer Step；不自动继续训练。
+python scripts/train_qwen3_lora.py --mode smoke
+
+# 预检/Smoke 通过后，用户独立启动完整 Oracle-SFT。
+python scripts/train_qwen3_lora.py --mode train
+
+# 示例：中断后从最近完整 checkpoint 恢复，保持相同配置。
+python scripts/train_qwen3_lora.py --mode train --resume /data/checkpoints/recovery_agent/qwen3_1.7b_oracle_lora/step-000020
+```
+
+训练依赖固定于 `requirements-gpu.txt`：Torch 2.7.1、Transformers 4.51.3、PEFT 0.15.2、
+Accelerate 1.6.0；Tokenizer 栈沿用 v0.4-A 版本。
+官方参考：[PyTorch previous versions](https://pytorch.org/get-started/previous-versions/)、
+[PEFT model loading](https://huggingface.co/docs/peft/v0.15.0/en/package_reference/peft_model)、
+[Transformers gradient checkpointing](https://huggingface.co/docs/transformers/v4.51.3/en/main_classes/model)。
+
+### B.2 Base / Adapter 对照
+
+`evaluate_local_model.py` 默认 `--execution dry-run`；真实推理必须显式 `--execution gpu`。
+模型只从本地加载，HF/Transformers offline；不连接 API。
+官方模板 `enable_thinking=False`，Hermes tool-call JSON 不修复、不得替换为 Oracle 动作。
+缺失/非法/截断输出进入原 Runtime 的解析反馈；原始生成文本、Token IDs、
+Tool Calls/Results、Usage、Latency、完整 Verifier/Audit 和终止诊断增量保存。
+
+复用同一 Collector、Environment、工具执行、Verifier、Replay，无独立模拟器。
+协议默认 termination-v0.3c-2；runtime-assisted stop 默认关闭。
+默认 tool=12、request=16、max-new-tokens=1024、episode-total-tokens=32768、
+temperature=0（greedy）、seed=42；实际每任务仍受冻结 max_recovery_steps 约束。
+每个任务按同一固定 seed 派生采样 seed。请求前按真实 Token 数检查总预算和上下文，
+不会静默截断历史。局部预算拒绝沿用旧 Runtime 的 global_api_budget 终止字段，
+本地无 API 请求，该字段在本场景表示 Predictor 预算终止。
+
+每轮保存 comparison_signature（任务/初始状态、schema、协议、预算、解码和运行停止开关），
+Base/Adapter 除权重外必须同配置，并使用独立输出目录。允许 `--resume`，禁止覆盖旧运行。
+从 adapter 最终目录或完整 step checkpoint 可独立加载 Base+Adapter，校验 Base/Tokenizer 归属。
+
+```bash
+# IID Validation 13 个，用于配置/Checkpoint 选择；不同 checkpoint 选新目录。
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_validation --output /data/outputs/recovery_agent/base_iid_validation
+python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /data/outputs/recovery_agent/qwen3_1.7b_oracle_lora/adapter --split iid_validation --output /data/outputs/recovery_agent/sft_iid_validation
+
+# 冻结已选配置后独立评测 IID Test 13、OOD Test 18，不用来训练/选超参/调 Prompt。
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_test --output /data/outputs/recovery_agent/base_iid_test
+python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /data/outputs/recovery_agent/qwen3_1.7b_oracle_lora/adapter --split iid_test --output /data/outputs/recovery_agent/sft_iid_test
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split ood --output /data/outputs/recovery_agent/base_ood
+python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /data/outputs/recovery_agent/qwen3_1.7b_oracle_lora/adapter --split ood --output /data/outputs/recovery_agent/sft_ood
+```
+
+新增 `benchmark_report.json` 给出任务级轨迹、分机制 numerator/denominator、Final/Ever/
+Autonomous、Unauthorized Mutation、Mutation Budget Exceeded、Invalid Attempt、
+Post-success Calls 和工具/Token/延迟开销。旧 Collector 指标语义保持原样：
+
+- Final：完整 Verifier 成功数 / 全部 Episode；异常保留在分母。
+- Ever：曾经完整成功数 / 可 Replay 的 Episode；缺失证据单列，不猜测曾经状态。
+- Autonomous：最终成功且 assistant_text / model-autonomous 可 Replay Episode；
+  runtime-assisted 不进入该分母。
+- 两个 Mutation Rate：有实际审计证明的违规资源/超契约操作 Episode / 可 Replay Episode，
+  拒绝的权限请求本身不当实际写入。
+- Invalid Rate：原 invalid_tool_calls / model_tool_attempts，含未执行和格式非法尝试。
+- Post-success：首次完整成功后的真实调用，报告总数及 ever-success 分母，不能全视为无意义。
+- Token 是真实 prompt+completion 数；Mock 零 Token 不当真实性能。
+
+### Benchmark 扩充方案与本轮边界
+
+`docs/v0.4_benchmark_plan.md` 只交付设计：独立 version/seed=1042，目标
+IID Validation 40 / IID Test 80 / OOD Test 80，有意义的初始状态、故障位置及依赖组合，
+规范化状态去重、来源排除、Oracle/Replay/Verifier 认证和分机制报告接口。
+未实现批量生成器、未生成新任务、未改变 v0.3-B 冻结划分。
+
+当前 GPU 仍待验证：真实模块/LoRA 注入、BF16 显存、有限 Forward/Backward/更新、
+optimizer/RNG Resume 连续性、真实 Base/Adapter 工具输出及 IID/OOD 指标。
+建议顺序：交付/CPU Dry-run → GPU 预检 → Base Train Smoke → GPU One-step →
+Oracle-SFT → IID Validation 选择 → 冻结 Base/SFT IID Test + OOD 对照。
+
+### v0.4-B actual Windows acceptance
+
+- Focused tests: **14 passed in 29.00s** across the three new test files.
+- One full pytest: **283 passed in 367.75s**, no skips.
+- CPU data dry-run: Oracle 204 / Teacher 84, supervised tokens 4294 / 3654; model_loaded=false.
+- Three Train Mock tasks passed native Runtime/Verifier/Replay; model performance was not measured.
+- Original core modules, frozen data and v0.4-A file hashes unchanged.
+- Windows preflight correctly blocked missing Torch/PEFT/Accelerate/base weights; no GPU validation claimed.
+- Only existing tokenizer dependency compatibility was repaired (huggingface-hub 2.2.0 -> 0.36.2); no GPU package was installed.
+- Acceptance: outputs/v0.4b_delivery/acceptance.json. Logs: outputs/v04b_focused_tests.log and outputs/v04b_full_tests.log.

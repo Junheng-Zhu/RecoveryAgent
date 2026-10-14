@@ -3,7 +3,9 @@ import copy
 import json
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from recovery_agent.paths import default_cli_path
 from recovery_agent.data_pipeline.dataset import DEFAULT_CONFIG
 from recovery_agent.data_pipeline.pipeline import run_pipeline, compare_directories
 from recovery_agent.data_pipeline.quality import validate_directory
@@ -13,16 +15,18 @@ def main():
     parser = argparse.ArgumentParser(description="RecoveryAgent v0.2 deterministic data pipeline")
     sub = parser.add_subparsers(dest="command", required=True)
     build = sub.add_parser("build")
-    build.add_argument("--output", default="data/v0.2_seed42")
+    build.add_argument("--output", default=default_cli_path("data/v0.2_seed42"))
     build.add_argument("--seed", type=int, default=42)
     build.add_argument("--config", help="Optional complete JSON config; overrides --seed")
     build.add_argument("--preference-decisions", type=int, default=1)
     validate = sub.add_parser("validate")
-    validate.add_argument("--input", default="data/v0.2_seed42")
+    validate.add_argument("--input", default=default_cli_path("data/v0.2_seed42"))
     compare = sub.add_parser("compare")
     compare.add_argument("--first", required=True)
     compare.add_argument("--second", required=True)
     args = parser.parse_args()
+    from recovery_agent.paths import resolve_cli_paths
+    resolve_cli_paths(args, ['output', 'input', 'first', 'second', 'config'])
     if args.command == "build":
         config = json.loads(Path(args.config).read_text(encoding="utf-8")) if args.config else copy.deepcopy(DEFAULT_CONFIG)
         if not args.config:

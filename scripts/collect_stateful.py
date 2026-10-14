@@ -3,7 +3,9 @@ import json
 import os
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from recovery_agent.paths import default_cli_path
 from recovery_agent.data_pipeline.common import write_jsonl, write_json, read_jsonl
 from recovery_agent.stateful.tasks import generate_tasks, VERSION
 from recovery_agent.stateful.predictor import load_dotenv, LLMConfig, MockPredictor, OnlinePredictor
@@ -17,7 +19,7 @@ def main():
     parser.add_argument("--count", type=int, default=16)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--variants", type=int, default=2)
-    parser.add_argument("--output", default="outputs/v0.3_mock")
+    parser.add_argument("--output", default=default_cli_path("outputs/v0.3_mock"))
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--evaluate-split", choices=("train", "val", "test", "all"))
     parser.add_argument("--clean", action="store_true")
@@ -30,6 +32,8 @@ def main():
     parser.add_argument("--timeout", type=float, default=90)
     parser.add_argument("--temperature", type=float, default=None)
     args = parser.parse_args()
+    from recovery_agent.paths import resolve_cli_paths, PROJECT_ROOT
+    resolve_cli_paths(args, ['output'])
     if min(args.count,args.variants,args.max_tool_calls,args.episode_requests) < 1:
         parser.error("counts and limits must be positive")
     tasks = generate_tasks(args.variants, args.seed)
@@ -40,7 +44,7 @@ def main():
             chosen = chosen[:args.count]
         else:
             chosen = sample_tasks(tasks, args.count, args.seed, "train")
-        load_dotenv(Path(".env"))
+        load_dotenv(PROJECT_ROOT/".env")
         config = LLMConfig(model=os.getenv("MODEL_NAME", ""), base_url=os.getenv("OPENAI_BASE_URL", ""),
                            temperature=args.temperature, max_tokens=args.max_tokens, timeout=args.timeout,
                            max_requests=args.max_requests, max_total_tokens=args.max_total_tokens,

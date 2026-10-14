@@ -6,12 +6,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from recovery_agent.sft_preparation import prepare
+from recovery_agent.paths import WorkspacePaths, project_path
 
 def main():
     """Offline by default; downloading public tokenizer files is an explicit separate choice."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT/"outputs/v0.4a_training_readiness")
-    parser.add_argument("--tokenizer", default=str(ROOT/"assets/tokenizers/Qwen3-1.7B"),
+    parser.add_argument("--output", type=Path, default=WorkspacePaths.from_env().outputs/"v0.4a_training_readiness")
+    parser.add_argument("--tokenizer", default=str(WorkspacePaths.from_env().tokenizer),
                         help="Official Hugging Face tokenizer model ID or local directory")
     parser.add_argument("--revision", default=None, help="Pin the HF tokenizer repository commit")
     parser.add_argument("--allow-tokenizer-download", action="store_true",
@@ -20,6 +21,10 @@ def main():
     parser.add_argument("--max-seq-length", type=int, default=8192)
     parser.add_argument("--mixed", action="store_true", help="Explicit trusted-source merge with deduplication")
     args = parser.parse_args()
+    workspace = WorkspacePaths.from_env()
+    args.output = project_path(args.output)
+    if not args.allow_tokenizer_download:
+        args.tokenizer = str(project_path(args.tokenizer))
     if args.max_seq_length <= 0:
         parser.error("--max-seq-length must be positive")
     if args.allow_tokenizer_download and not args.revision:

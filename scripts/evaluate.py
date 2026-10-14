@@ -2,7 +2,9 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from recovery_agent.paths import default_cli_path
 from recovery_agent.dataset import load_tasks
 from recovery_agent.policy import RulePolicy, RetryPolicy, StopPolicy
 from recovery_agent.oracle import Oracle
@@ -12,12 +14,14 @@ from recovery_agent.runner import evaluate, replay
 # Oracle 使用独立认证模式，不能把其成功率当作普通模型评测结果。
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tasks", default="data/tasks/smoke.jsonl")
+    parser.add_argument("--tasks", default=default_cli_path("data/tasks/smoke.jsonl"))
     parser.add_argument("--policy", choices=("rule", "retry", "stop", "oracle"), default="rule")
     parser.add_argument("--split", choices=("train", "val", "test", "all"), default="all")
-    parser.add_argument("--output", default="outputs/rule")
+    parser.add_argument("--output", default=default_cli_path("outputs/rule"))
     parser.add_argument("--replay", action="store_true")
     args = parser.parse_args()
+    from recovery_agent.paths import resolve_cli_paths
+    resolve_cli_paths(args, ['tasks', 'output'])
     tasks = [t for t in load_tasks(args.tasks) if args.split == "all" or t["split"] == args.split]
     factories = {"rule": lambda _: RulePolicy(), "retry": lambda _: RetryPolicy(),
                  "stop": lambda _: StopPolicy(), "oracle": Oracle}

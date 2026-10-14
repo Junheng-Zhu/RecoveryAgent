@@ -2,7 +2,9 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from recovery_agent.paths import default_cli_path
 from recovery_agent.hardening.tasks import freeze,validate_frozen
 from recovery_agent.hardening.protocol import schema_hash,STOP_PROTOCOLS
 from recovery_agent.hardening.batch import collect,compare_protocols,review_collection
@@ -15,11 +17,11 @@ def main():
     # Network is disabled by default; --online explicitly enables one or user-triggered many episodes.
     parser=argparse.ArgumentParser()
     sub=parser.add_subparsers(dest="command",required=True)
-    build=sub.add_parser("freeze");build.add_argument("--output",default="data/v0.3b_seed42_final")
+    build=sub.add_parser("freeze");build.add_argument("--output",default=default_cli_path("data/v0.3b_seed42_final"))
     build.add_argument("--variants",type=int,default=6);build.add_argument("--seed",type=int,default=42)
     run=sub.add_parser("collect")
-    run.add_argument("--dataset",default="data/v0.3b_seed42_final")
-    run.add_argument("--output",default="outputs/v0.3b_mock")
+    run.add_argument("--dataset",default=default_cli_path("data/v0.3b_seed42_final"))
+    run.add_argument("--output",default=default_cli_path("outputs/v0.3b_mock"))
     run.add_argument("--stop-protocol",choices=STOP_PROTOCOLS,default="legacy")
     run.add_argument("--stop-on-verified-success",action="store_true")
     run.add_argument("--online",action="store_true");run.add_argument("--resume",action="store_true")
@@ -33,11 +35,13 @@ def main():
     run.add_argument("--timeout",type=float,default=90)
     e=sub.add_parser("export");e.add_argument("--input",required=True);e.add_argument("--output",required=True)
     e.add_argument("--legacy-input")
-    v=sub.add_parser("validate");v.add_argument("--dataset",default="data/v0.3b_seed42_final")
+    v=sub.add_parser("validate");v.add_argument("--dataset",default=default_cli_path("data/v0.3b_seed42_final"))
     v.add_argument("--input",required=True);v.add_argument("--export")
     review=sub.add_parser("review");review.add_argument("--input",required=True);review.add_argument("--output",required=True)
     compare=sub.add_parser("compare");compare.add_argument("--first",required=True);compare.add_argument("--second",required=True)
     args=parser.parse_args()
+    from recovery_agent.paths import resolve_cli_paths
+    resolve_cli_paths(args, ['dataset', 'output', 'input', 'export', 'legacy_input', 'first', 'second'])
     if args.command=="freeze":
         tasks,manifest=freeze(args.output,args.variants,args.seed,schema_hash())
         print(json.dumps({"tasks":len(tasks),"schema_hash":manifest["schema_hash"]},indent=2))

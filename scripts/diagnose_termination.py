@@ -3,19 +3,23 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from recovery_agent.paths import default_cli_path
 from recovery_agent.hardening.termination import diagnose_directory,compare_stop_protocols
 from recovery_agent.hardening.mutation_diagnostics import diagnose_pair
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input",default="outputs/v0.3b_teacher10")
-    parser.add_argument("--output",default="outputs/v0.3c_teacher10_diagnostic")
+    parser.add_argument("--input",default=default_cli_path("outputs/v0.3b_teacher10"))
+    parser.add_argument("--output",default=default_cli_path("outputs/v0.3c_teacher10_diagnostic"))
     parser.add_argument("--paired-second",help="Second collection for matched offline mutation attribution")
     parser.add_argument("--compare-third")
     parser.add_argument("--compare-first")
     parser.add_argument("--compare-second")
     args=parser.parse_args()
+    from recovery_agent.paths import resolve_cli_paths
+    resolve_cli_paths(args, ['input', 'output', 'paired_second', 'compare_first', 'compare_second', 'compare_third'])
     if args.compare_first or args.compare_second or args.compare_third:
         if not (args.compare_first and args.compare_second):
             parser.error("Both comparison directories are required")
