@@ -1,0 +1,196 @@
+{
+  "content_digest": "b367171f1d3ca3a5c83534c795e1dc5f05f8bbf20c791af1f5f0ec5893f31504",
+  "dataset_version": "0.3-B",
+  "files": [
+    {
+      "cohort": "frozen",
+      "name": "config.json",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/config.json",
+      "sha256": "67acc6102f9a75430177b424a071fba49c8113a539c40c250cdf02de9c1cfdce",
+      "size": 242,
+      "source": "data\\v0.3b_seed42_final\\config.json"
+    },
+    {
+      "cohort": "frozen",
+      "name": "iid_test.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/iid_test.jsonl",
+      "sha256": "c0f975987cb2221e9d2ee3c96884367787c66e9346964c853adb56b62e294db8",
+      "size": 18537,
+      "source": "data\\v0.3b_seed42_final\\iid_test.jsonl"
+    },
+    {
+      "cohort": "frozen",
+      "name": "iid_validation.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/iid_validation.jsonl",
+      "sha256": "cac039f30e65c79b78cbc0db1a7ada95cd7fba399b20beed427364b5a38577e0",
+      "size": 18600,
+      "source": "data\\v0.3b_seed42_final\\iid_validation.jsonl"
+    },
+    {
+      "cohort": "frozen",
+      "name": "manifest.json",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/manifest.json",
+      "sha256": "27bdffb48597875eb6e44d32d1c09f28adee7865157cdac57582d8eb549f8c61",
+      "size": 1013,
+      "source": "data\\v0.3b_seed42_final\\manifest.json"
+    },
+    {
+      "cohort": "frozen",
+      "name": "ood.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/ood.jsonl",
+      "sha256": "e393c9780c0c71faeb0476cc1bce42d38ef8d6d30663e490b1149646a93ba77f",
+      "size": 29352,
+      "source": "data\\v0.3b_seed42_final\\ood.jsonl"
+    },
+    {
+      "cohort": "frozen",
+      "name": "tasks.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/tasks.jsonl",
+      "sha256": "09b09da3c4cf159d2153923a56fb6e6dcbc58949e8e5858aae53e0ddfcdc329f",
+      "size": 140519,
+      "source": "data\\v0.3b_seed42_final\\tasks.jsonl"
+    },
+    {
+      "cohort": "frozen",
+      "name": "train.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.3b_seed42_final/train.jsonl",
+      "sha256": "aa250d8085ffa2e55c87a6280928634b1ba77cee0f9f9aea078a7206d77ddd4f",
+      "size": 74030,
+      "source": "data\\v0.3b_seed42_final\\train.jsonl"
+    },
+    {
+      "cohort": "sft",
+      "name": "mask_examples.json",
+      "server_destination": "/data/datasets/recovery_agent/v0.4a_training_readiness/mask_examples.json",
+      "sha256": "3983035100cab2cb26f637e75ef2e27f63eea8dcd298e50b76cd6a0461e2e1bb",
+      "size": 631855,
+      "source": "outputs\\v0.4a_training_readiness\\mask_examples.json"
+    },
+    {
+      "cohort": "sft",
+      "name": "oracle_sft.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.4a_training_readiness/oracle_sft.jsonl",
+      "sha256": "d5406c372e28dfd8249c584f35df3fa3a87e9e056267039be448a38990486fd9",
+      "size": 5549529,
+      "source": "outputs\\v0.4a_training_readiness\\oracle_sft.jsonl"
+    },
+    {
+      "cohort": "sft",
+      "name": "readiness_report.md",
+      "server_destination": "/data/datasets/recovery_agent/v0.4a_training_readiness/readiness_report.md",
+      "sha256": "2f286705e536f1c65e44bf2a57ab7c9d86f73382f21def8b4efe1af988ff1964",
+      "size": 5396,
+      "source": "outputs\\v0.4a_training_readiness\\readiness_report.md"
+    },
+    {
+      "cohort": "sft",
+      "name": "source_audit.json",
+      "server_destination": "/data/datasets/recovery_agent/v0.4a_training_readiness/source_audit.json",
+      "sha256": "63055a1764a399bdc43d19bb3931dcbbae93f948f787edb514a6965968a46683",
+      "size": 150354,
+      "source": "outputs\\v0.4a_training_readiness\\source_audit.json"
+    },
+    {
+      "cohort": "sft",
+      "name": "teacher_sft.jsonl",
+      "server_destination": "/data/datasets/recovery_agent/v0.4a_training_readiness/teacher_sft.jsonl",
+      "sha256": "15c265d0056afd17d85ee0b1703e42a56a16cbd57db9cd051a9cf52681ee07b8",
+      "size": 2684586,
+      "source": "outputs\\v0.4a_training_readiness\\teacher_sft.jsonl"
+    },
+    {
+      "cohort": "sft",
+      "name": "token_stats.json",
+      "server_destination": "/data/datasets/recovery_agent/v0.4a_training_readiness/token_stats.json",
+      "sha256": "6e100f3f44cd14ecbe539029fbae24b6d6b72ac1adb1e10890ef06effdf3567b",
+      "size": 41834,
+      "source": "outputs\\v0.4a_training_readiness\\token_stats.json"
+    },
+    {
+      "cohort": "tokenizer",
+      "name": "config.json",
+      "server_destination": "/data/models/Qwen3-1.7B/config.json",
+      "sha256": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+      "size": 726,
+      "source": "assets\\tokenizers\\Qwen3-1.7B\\config.json"
+    },
+    {
+      "cohort": "tokenizer",
+      "name": "merges.txt",
+      "server_destination": "/data/models/Qwen3-1.7B/merges.txt",
+      "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "size": 1671853,
+      "source": "assets\\tokenizers\\Qwen3-1.7B\\merges.txt"
+    },
+    {
+      "cohort": "tokenizer",
+      "name": "tokenizer.json",
+      "server_destination": "/data/models/Qwen3-1.7B/tokenizer.json",
+      "sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "size": 11422654,
+      "source": "assets\\tokenizers\\Qwen3-1.7B\\tokenizer.json"
+    },
+    {
+      "cohort": "tokenizer",
+      "name": "tokenizer_config.json",
+      "server_destination": "/data/models/Qwen3-1.7B/tokenizer_config.json",
+      "sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "size": 9732,
+      "source": "assets\\tokenizers\\Qwen3-1.7B\\tokenizer_config.json"
+    },
+    {
+      "cohort": "tokenizer",
+      "name": "vocab.json",
+      "server_destination": "/data/models/Qwen3-1.7B/vocab.json",
+      "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "size": 2776833,
+      "source": "assets\\tokenizers\\Qwen3-1.7B\\vocab.json"
+    }
+  ],
+  "first_training_source": "oracle",
+  "preparation_version": "v0.4-A",
+  "template": {
+    "call_ids_rendered": false,
+    "enable_thinking": false,
+    "eos_token_id": 151645,
+    "final_answer": true,
+    "mask_method": "exact_generation_prefix_token_alignment",
+    "mask_scope": "final_verified_assistant_only",
+    "native_generation_mask": false,
+    "template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "tool_call_groups": true,
+    "tool_responses": true
+  },
+  "tokenizer": {
+    "class": "Qwen2TokenizerFast",
+    "download": {
+      "repo_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+    },
+    "file_sha256": {
+      "config.json": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+      "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    },
+    "identifier": "D:\\pyproject\\RecoveryAgent\\assets\\tokenizers\\Qwen3-1.7B",
+    "model_config_max_position_embeddings": 40960,
+    "model_max_length": 131072,
+    "versions": {
+      "huggingface_hub": "0.36.2",
+      "tokenizers": "0.21.4",
+      "transformers": "4.51.3"
+    }
+  },
+  "trusted_decisions": {
+    "oracle_reference": 204,
+    "teacher": 84
+  },
+  "version": "v0.4-B",
+  "weights": {
+    "downloaded": false,
+    "required_action": "User provides local complete base weights; GPU preflight hashes them.",
+    "shard_hashes": null
+  }
+}

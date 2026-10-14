@@ -1,0 +1,4259 @@
+{
+  "acceptance": {
+    "existing_core_files_unchanged": true,
+    "focused_tests": "6 passed in 15.54s",
+    "frozen_data_and_requested_sources_unchanged": true,
+    "full_tests": "269 passed in 326.91s",
+    "model_weights_downloaded": false,
+    "paid_api_calls": 0,
+    "training_executed": false
+  },
+  "causal_prompts_checked": true,
+  "cross_split_leakage": 0,
+  "dataset_manifest": {
+    "artifacts": {
+      "config.json": "67acc6102f9a75430177b424a071fba49c8113a539c40c250cdf02de9c1cfdce",
+      "iid_test.jsonl": "c0f975987cb2221e9d2ee3c96884367787c66e9346964c853adb56b62e294db8",
+      "iid_validation.jsonl": "cac039f30e65c79b78cbc0db1a7ada95cd7fba399b20beed427364b5a38577e0",
+      "ood.jsonl": "e393c9780c0c71faeb0476cc1bce42d38ef8d6d30663e490b1149646a93ba77f",
+      "tasks.jsonl": "09b09da3c4cf159d2153923a56fb6e6dcbc58949e8e5858aae53e0ddfcdc329f",
+      "train.jsonl": "aa250d8085ffa2e55c87a6280928634b1ba77cee0f9f9aea078a7206d77ddd4f"
+    },
+    "config": {
+      "dataset_version": "0.3-B",
+      "iid_variant_rule": "mod6=4 validation;mod6=5 test;else train",
+      "ood_families": [
+        "git_compensating_commit",
+        "sqlite_dependency",
+        "sqlite_relink"
+      ],
+      "seed": 42,
+      "variants": 6
+    },
+    "schema_hash": "78b8dd9dde18b3038404f7aa9c00c7fd4fa783ac5541b5c573e5b964669a64f8",
+    "task_digest": "ffb3f6b84747d6eb1121d650e2f298fe3db359c13aa324d24a1a3b1d0ae49e50"
+  },
+  "duplicate_samples_removed": {},
+  "episodes": [
+    {
+      "behavior_counts": {
+        "diagnostic": 6,
+        "recovery_action": 3,
+        "uncertain": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 3,
+        "untrusted:uncertain": 2,
+        "untrusted_decision": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 11,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-002",
+      "trajectory_id": "0b6ce7bc961cd3eb13ec1a448a08b710e6461ec8eaa8a1ad1af7ef7e68713d7f",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 6,
+        "recovery_action": 3,
+        "redundant": 1,
+        "uncertain": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 1,
+        "untrusted:redundant": 1,
+        "untrusted:uncertain": 2,
+        "untrusted_decision": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 12,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-002",
+      "trajectory_id": "b32efa1c0c8a4a6fcbfc64e5a238ae45439febf2d68becc0e7f8eb8fe6aaa1fd",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 4,
+        "recovery_action": 2,
+        "redundant": 1,
+        "uncertain": 4,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 11
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 12,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-002",
+      "trajectory_id": "7a160fd648f6b0efd68464375a5805972e7cc2f3d701b86194cff37a6cd0a310",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 5,
+        "invalid": 1,
+        "recovery_action": 1,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 2,
+        "untrusted:invalid": 1,
+        "untrusted:tool_failed": 1,
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-git_checkout_conflict-000",
+      "trajectory_id": "9dd7214a2b9f67f37b6ddc92d7fa51f9993313a385a7efa91ccf3329f12cbbf9",
+      "trusted_decisions": 2
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 7,
+        "recovery_action": 3,
+        "uncertain": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "invalid_decision": 1,
+        "post_success_call": 2,
+        "untrusted:uncertain": 2,
+        "untrusted_decision": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 12,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-000",
+      "trajectory_id": "4ea0eddd63013b47927de4f292bdfadd24aeb142152199b14cbefcd7e7e427c1",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 1,
+        "uncertain": 4,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 7
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-002",
+      "trajectory_id": "12aca5ebca2938aa3a6d0ae6d06b00e5875cc6e421ce966af5dd661d09f49ffd",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 5,
+        "recovery_action": 2,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 3,
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-git_stage_missing-000",
+      "trajectory_id": "a62245e1d1ac75c0adfdc89435e1749e0b467dfdb45ce408a98dc8e5a88f346c",
+      "trusted_decisions": 4
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 6,
+        "recovery_action": 3,
+        "redundant": 1,
+        "uncertain": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 2,
+        "untrusted:redundant": 1,
+        "untrusted:uncertain": 2,
+        "untrusted_decision": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 12,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-003",
+      "trajectory_id": "e167f66f338ed267cd381491204695cd9f4ad193f92ea1c5666e03d37053891f",
+      "trusted_decisions": 7
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 4,
+        "recovery_action": 2,
+        "redundant": 1,
+        "uncertain": 4,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 9
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 12,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-001",
+      "trajectory_id": "95b1271e5b963c896a54aedd02076b397833301c1e93537f7a8d969ea1b66cab",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "redundant": 2,
+        "uncertain": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "invalid_decision": 1,
+        "post_success_call": 1,
+        "untrusted:redundant": 2,
+        "untrusted:uncertain": 3,
+        "untrusted_decision": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3b_teacher10",
+      "split": "train",
+      "task_id": "0.3-B-git_no_change-003",
+      "trajectory_id": "e184c43a149d97b4e982f2c28260c9a356a3a90dbd21ee5d4b210fc5e0198a68",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2,
+        "uncertain": 1,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "mutation_budget_exceeded",
+        "redundant_state_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 7
+      },
+      "final_verifier": {
+        "extra_side_effects": 1,
+        "state_matches": true,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 6,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-002",
+      "trajectory_id": "ab33122c63b30323230d4ce9653de77a38b2ccc37af7c4997963504c60b1b76f",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 4,
+        "recovery_action": 3,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "invalid_decision": 1,
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-002",
+      "trajectory_id": "468dfcb3b64d8cb9156b1e8cd4ef1d0e9eac3a7b4e9c44264689a37603194709",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 2,
+        "uncertain": 5,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 11
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 11,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-002",
+      "trajectory_id": "0c0f0ba35d69b5fd35fb426581e34b0fb21a44f136c5491dd7568792ae74d255",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-git_checkout_conflict-000",
+      "trajectory_id": "00e3ff16ba775ec72d6da23022585e022a2fb23ee867d33547ce6922a6b3f8be",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 3,
+        "uncertain": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "untrusted:tool_failed": 1,
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-000",
+      "trajectory_id": "956d42722923ae153e74912bce43eccb86fb8f37f31ca4a5481acb63124860e5",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 1,
+        "uncertain": 4,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-002",
+      "trajectory_id": "887bc4ba537ff3c61264a2dc9e4d24140f90355ea3973c08abde71e712c2cc69",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-git_stage_missing-000",
+      "trajectory_id": "a32a27fb9c3645398f60e99f0a9029c8a0f88b87825d4622b8c7f450fa2ce047",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 4,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 7,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-003",
+      "trajectory_id": "34c9b3a565873f2c7ef33b35a4ce86ca4a647f28f5dce15f5d097c105850a676",
+      "trusted_decisions": 8
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 4,
+        "recovery_action": 2,
+        "uncertain": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 2,
+        "untrusted:tool_failed": 1,
+        "untrusted:uncertain": 3,
+        "untrusted_decision": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 9,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-001",
+      "trajectory_id": "084afbe69d1545e6c6cf569a87f9581b7dc50406cf2456f1e503d7fd3039d0f9",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 2,
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v0.3c_teacher10_new_stop",
+      "split": "train",
+      "task_id": "0.3-B-git_no_change-003",
+      "trajectory_id": "b100e9b72ebc21d5b6f289ea9db7a650586d3067da38b4ff8ead16298f16ef34",
+      "trusted_decisions": 1
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 2,
+        "uncertain": 2,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "mutation_budget_exceeded",
+        "redundant_state_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 1,
+        "state_matches": true,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c1_git_multifile_revision-001",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-001",
+      "trajectory_id": "9a78f75de2c59836f2c79c8b5ddac00321d13ce0d64809733eb2eb40bf7527a4",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 1,
+        "uncertain": 1,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "uncertain"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 1,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c1_git_stale_index-001",
+      "split": "train",
+      "task_id": "0.3-B-git_stale_index-001",
+      "trajectory_id": "a5ce43132fccb192247a0d11e1bb7bdf410f6681cc9de70ad54e7b18f471b990",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 5,
+        "recovery_action": 2,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "uncertain"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 9
+      },
+      "final_verifier": {
+        "extra_side_effects": 1,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c1_git_wrong_branch-001",
+      "split": "train",
+      "task_id": "0.3-B-git_wrong_branch-001",
+      "trajectory_id": "8ba2aa4b8e2abfdd9f0f7103680cbbf837863f13d68fbeee4d70dee189b18f8c",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 3,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 7,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c1_mixed_db_git_report-001",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-001",
+      "trajectory_id": "35ef3b06600bccb2a96e997f2ff4018ad58424becebdce10278cef6cdb850e06",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1,
+        "uncertain": 5,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 7
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c1_sqlite_primary_key-001",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-001",
+      "trajectory_id": "5634df205a7a5132e18d6f0b564e311cfe6b7a3ffd568eaedf71b31b215650c1",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3,
+        "uncertain": 6,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 9
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-1",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 12,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c1_sqlite_unique_swap-001",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique_swap-001",
+      "trajectory_id": "9d1f7eecc08d92e821753154faa9f7dab5667271d767f7b5be1d83653609bfc2",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 3,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 7,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c2_git_multifile_revision-001",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-001",
+      "trajectory_id": "7357c62d6691407afb657b68527e7bde371dc8950f338df6b88ace90b93a5160",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 1,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "uncertain"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 1,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c2_git_stale_index-001",
+      "split": "train",
+      "task_id": "0.3-B-git_stale_index-001",
+      "trajectory_id": "51d82577cae0c74e7fd505c7d7a9887f8291b2727c872b0e2d7304108b62bb10",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 2,
+        "uncertain": 1
+      },
+      "diagnostic_labels": [
+        "incomplete_recovery"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 6,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c2_git_wrong_branch-001",
+      "split": "train",
+      "task_id": "0.3-B-git_wrong_branch-001",
+      "trajectory_id": "f0db212cdd23614f800d603766f105532b8be0a3cac2e4edeacf17354003e4f0",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [
+        "incomplete_recovery"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c2_mixed_db_git_report-001",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-001",
+      "trajectory_id": "19b2f3586300c6ea462eb7eef59d35d27d2e786fe9e22fe4a61406d0375aae2d",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 1,
+        "uncertain": 4,
+        "unsafe": 1
+      },
+      "diagnostic_labels": [
+        "unauthorized_mutation"
+      ],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": false,
+        "success": false,
+        "unauthorized_modifications": 1
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 8,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c2_sqlite_primary_key-001",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-001",
+      "trajectory_id": "e34c6ba23af3ec8a4467b4469dc9b8040e73b0d3da7affebac72a95c60f1d210",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3,
+        "uncertain": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 1,
+        "untrusted:uncertain": 2,
+        "untrusted_decision": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 7,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_eval_c2_sqlite_unique_swap-001",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique_swap-001",
+      "trajectory_id": "49b991e81f5b4574a42dca1afcd616195cf7cac38be3d8e7f568ab24f9ada1c9",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 3,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "qwen3.8-max-0902",
+      "protocol_version": "termination-v0.3c-2",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 6,
+      "replay_verified": true,
+      "source": "llm",
+      "source_directory": "outputs\\v03c2_retry_mixed_db_git_report_001",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-001",
+      "trajectory_id": "da20be5201ac13782091394c52f24d542781588c2d5486a07a4199e5074f9379",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stage_missing-000",
+      "trajectory_id": "22de0f349946b315fe3c377359ea2326a1e37edf6dbd66215a211a158437f2bc",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "REVISION_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_revision_conflict-000",
+      "trajectory_id": "2242de42cc7ee60b8153ba8f1bc84d1056c5ebfaf339fb2ed80c06421eea784a",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 1,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_no_change-000",
+      "trajectory_id": "42b4ed707e788847b5844cac32cd9d9451ca8286e37dc3a2394ae71583bd463c",
+      "trusted_decisions": 1
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_checkout_conflict-000",
+      "trajectory_id": "05ffc01fc3caee1963c4b2d8854b324ddd6ae6695c3adf277018f5eedca09b5b",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-000",
+      "trajectory_id": "948b0e908e88e51792dad9f094115aefe2f6198751784fed81b772a1d508d469",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique-000",
+      "trajectory_id": "91207bfa3871182092eb4bb49bf56471854c68695723fab95295620223c0651e",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "TRANSACTION_FAILED",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_transaction-000",
+      "trajectory_id": "6193ce209e12c4fc569b7f61606548528fc53171177bb89ac85fbfde4c709077",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_dependency-000",
+      "trajectory_id": "857500eae74e364cebbc2d57d75a756af4a108ea669ce21640627336c89f5594",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_wrong_branch-000",
+      "trajectory_id": "3c851a445159f068c11c38e56ebb9b63f9da0483f75df490cfbbb095780d3c18",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stale_index-000",
+      "trajectory_id": "4f5c574467600f9d32407e6f4b479d54fbd800322f723f6246da7c8f5d85c63f",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-000",
+      "trajectory_id": "ebc92a5175a3cad85d69f501ee41a79c2c75f825e36fcb43dd84a580d3eac9fb",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "UNSAFE_ACTION",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_compensating_commit-000",
+      "trajectory_id": "8773f7fe99dc5976ea27a2cce54db4708aaa3790ad0973c5f334ee7f4d95340e",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-000",
+      "trajectory_id": "272373a75b9d5ae744a44a4b06102dae8d558a475c0f4937ffcb478b0bae468a",
+      "trusted_decisions": 4
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique_swap-000",
+      "trajectory_id": "0fdca50331ea20ab49a0cb7b79bdcb64a31aad1900b0942ea2bf3b89cd729e45",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_relink-000",
+      "trajectory_id": "81da04fc394844a6835167de313244fda8ea4f70177dfe20d838a38225d5e350",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-000",
+      "trajectory_id": "d10603345d8aee9e417984a6b6b3a99ec2d8778e5318742fa10aa9bfd9c502d7",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stage_missing-001",
+      "trajectory_id": "283b1ccac5cc4590dda2076485ff4052b5611bcba16bd39f8947137b35e8f6db",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "REVISION_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_revision_conflict-001",
+      "trajectory_id": "49fddc3d97f85b1a92d2653181f9fa9ac91ff04ec0635f1784b0479942a2fa94",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 1,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_no_change-001",
+      "trajectory_id": "7a5bd28f5955d7f721f268fc3d3acfc94bf9af84d8203065a9d12a5ec4e0655a",
+      "trusted_decisions": 1
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_checkout_conflict-001",
+      "trajectory_id": "ce584f4e9043b00fa70769af7737361bb60f82587112495f32336f84f0f2f1cc",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-001",
+      "trajectory_id": "9d356e3aee4f09b5435c75fd44c02985817dd3eb4f5fbe541e34ccc9fc38e47c",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique-001",
+      "trajectory_id": "5e03d2a239423b2a15616969059ad084ab58f62df0feaae5baccae1959572225",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "TRANSACTION_FAILED",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_transaction-001",
+      "trajectory_id": "eb31573bc700d1a83a7e6d541f1f025598b17ec5d2dbb39001f29e05800001f6",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_dependency-001",
+      "trajectory_id": "62530ab386abb18eee96df0ae00c21ac4d885e37092ae3d2cc7c6e2ade4c3854",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_wrong_branch-001",
+      "trajectory_id": "6be2d3ee87003c2055e432d116b076bd3120f36d5f0617022f8fa4fbec05f13e",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stale_index-001",
+      "trajectory_id": "9ee9fb35f9f14a9e19736a179ce1314cafe2f10526ecf2e2b4d7d257d2f9a718",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-001",
+      "trajectory_id": "e8ead58717cefde8e64058338071937663c7fb9c97adeac4ddd4774480e7b378",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "UNSAFE_ACTION",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_compensating_commit-001",
+      "trajectory_id": "94b02b6d23f06afb927bfeabf243490bc9448030c8841db2c367e409321242fb",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-001",
+      "trajectory_id": "a6ff433efe68d0381aa07fc103e39f07dbed46fe04731edd02a8f19cca1ae42b",
+      "trusted_decisions": 4
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique_swap-001",
+      "trajectory_id": "7a74a51f9174cb0c60285fcff3f40bea2554f77d81d576cf9688e39f7b6e6f7e",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_relink-001",
+      "trajectory_id": "9ee971a2023e929ff3d46c1124a419cca6587d4e2c751213e99443b55e8d27e9",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-001",
+      "trajectory_id": "95b3224a83324b173171079964d5077be90fd4360d52ba3ce900d9666219c29b",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stage_missing-002",
+      "trajectory_id": "546c9fc64a146c7aa650cce0d08e78912b42f5d6bac5ec1dfff9a2bdf6c797ca",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "REVISION_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_revision_conflict-002",
+      "trajectory_id": "8e429c5de464b5de41152743a04a628181f97fae4ff494af31e75050fdab5202",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 1,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_no_change-002",
+      "trajectory_id": "b303507742b36de33e518c0f7d3629ef9ad7a3bccf5a382090e5ee934cdedb86",
+      "trusted_decisions": 1
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_checkout_conflict-002",
+      "trajectory_id": "cf0a6b032185c4772adb68a093b5ac42c312e8edebfa991255cd96e07d3a96db",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-002",
+      "trajectory_id": "a11565da614998001af6c9f15ff68cb7556d7d6b29a62b3a1f55ed5681f5e0f6",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique-002",
+      "trajectory_id": "d6a5599ad431088f5780858776fb3f8dc0d6b0d723b767b9337585c24edba847",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "TRANSACTION_FAILED",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_transaction-002",
+      "trajectory_id": "221e79528a95567785768ad543d602d0ad49f2a2780f9a8be8471e26e068b1d8",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_dependency-002",
+      "trajectory_id": "6cb9c51082e4a134d2279ff65b45eef85d508209f62bf9284a139348dfbd2d41",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_wrong_branch-002",
+      "trajectory_id": "e512368e6f3271199c57f74bfc58277c20c2047a49851bbad89071cef6a41c0a",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stale_index-002",
+      "trajectory_id": "d76f5019251783b68641c8de5eb873e275669850eb9adca0dbe7aa5ce019b4c4",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-002",
+      "trajectory_id": "076ba1ee17e7ad3c18dd491dacbcd04440f98c221bd539a2f507179e35f1dc71",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "UNSAFE_ACTION",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_compensating_commit-002",
+      "trajectory_id": "42434a62c841f69b92d7c554f8fadf7bfb0c7336e2f4c13d457580102a81e532",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-002",
+      "trajectory_id": "5b2a6294ffe9250b73402cd816450d30d80bed7e94d272c8f40aaff4d98209ec",
+      "trusted_decisions": 4
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique_swap-002",
+      "trajectory_id": "0e02f8beaba050bb76d82e6fa9291d9f7bb30c4a0436561074a64ea928c98758",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_relink-002",
+      "trajectory_id": "0b59387c8ee8889d2c6c01b3bd73b32f6d119ca53c23b3a253b926659208ff39",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-002",
+      "trajectory_id": "4aacf05dfc1b2689400f723c1b83b376d47530aac59005f9d6bebc22b537c28b",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stage_missing-003",
+      "trajectory_id": "a4a44788802b502af286a278e6c117dfae5ab536ca1bb67156b5cf52aa3ff77a",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "REVISION_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_revision_conflict-003",
+      "trajectory_id": "daac2d06fbd340128e4f4d52f356029708a84cbef9f092493da98b98e718c2b1",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {
+        "post_success_call": 1
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 1,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_no_change-003",
+      "trajectory_id": "9e40584e68c5d7b6a40fecb5745e8515eb821751b210656fb724eaef27e0781e",
+      "trusted_decisions": 1
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_checkout_conflict-003",
+      "trajectory_id": "5a64b613ffb7434e99e8efcf93994898b4642c7f4b5bcb8354e11cf0dc55466b",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_primary_key-003",
+      "trajectory_id": "0fb09d838e4ce08dae01f14971702c110fe5a3fb2a42a40bd2eb108d545863d6",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique-003",
+      "trajectory_id": "ab4d0164986c3f41fba1de040ebb3679f6776b028df4d824e110135fccdb0944",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "TRANSACTION_FAILED",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_transaction-003",
+      "trajectory_id": "b188b924cd344897b7a2b50d1108ee83a2ea40227350c1e743f32456f9c065b0",
+      "trusted_decisions": 3
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_dependency-003",
+      "trajectory_id": "9cfc9b621ef044ff344975f8c5c66364446bff830410538fdc32bbfae5176e3e",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_wrong_branch-003",
+      "trajectory_id": "d3d00a3136aa76ca545cbe096e0fd6a86f25d351b11baffb1012b7a5b34ec5e7",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_stale_index-003",
+      "trajectory_id": "0a8f484108471a934b43b04f196dfa828b07e664bbd58e7d5731f9cb218f4b68",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-git_multifile_revision-003",
+      "trajectory_id": "545f83740b3c6e2def144dff9c5818caef83d01fa7112d768ed29be20afdb8de",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "UNSAFE_ACTION",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_compensating_commit-003",
+      "trajectory_id": "28681d27871ed693b0becd0d5f3a44dce3d8300380d82acfad636f3f2112a9e0",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_delete_dependency-003",
+      "trajectory_id": "9e085fbf7d6e904877b4c1972afa4ecc7be5c181f254cb13eee041dce6c84859",
+      "trusted_decisions": 4
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-sqlite_unique_swap-003",
+      "trajectory_id": "3a5efd3db6d99b23fe78555d981cd0d2f682d896ab230a6ce903dd4d285773fa",
+      "trusted_decisions": 5
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_relink-003",
+      "trajectory_id": "331d26b9615b0c3dbd2e7fb49efc9a9e89451008437468b5e6fb68222ef81b46",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "train",
+      "exclusion_reasons": {},
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "train",
+      "task_id": "0.3-B-mixed_db_git_report-003",
+      "trajectory_id": "c4818b553b0b90d6e663245e6bf0456c25ef533fbbaadb7b1608c4e2f9dccd66",
+      "trusted_decisions": 6
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_stage_missing-004",
+      "trajectory_id": "6be1d05cf4ac1bfdcd25f89c2f3dacf8bdb298f12f914f1f10e686ad0fef3151",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "REVISION_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_revision_conflict-004",
+      "trajectory_id": "4feffe9375cf18ee6ca1e96c67135aa57913788f72f9772d60bf237f397c993d",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 1,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_no_change-004",
+      "trajectory_id": "0f174a071085eb8abc725cf48adcf66893ed57f5d261f68e436bc70aeedf30b6",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_checkout_conflict-004",
+      "trajectory_id": "987f9ce7d92a99d622b6bca416fac3319216fd9dc70a532fc1e070a47628266a",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-sqlite_primary_key-004",
+      "trajectory_id": "cd75e44576ab82a9e66858460e1a881b981f61a7444f2cfbb234ae911f28d665",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-sqlite_unique-004",
+      "trajectory_id": "559cd82c9342f5317b1117b6b215907889f87449fb936140880bc868f71ab713",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "TRANSACTION_FAILED",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-sqlite_transaction-004",
+      "trajectory_id": "44bc2ccd24bc2839f3805b2d0b66cc294f13fc44e27d67c784b96fe4d01cf9d5",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_dependency-004",
+      "trajectory_id": "062b71a2309f001f95f211adeb18c00a6e2f4badc350e74de8fe4387d42461aa",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_wrong_branch-004",
+      "trajectory_id": "665a1c474375eee4f800cc5cbf633942f89023e52f40c237138d07b56cdad921",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_stale_index-004",
+      "trajectory_id": "ccfe1f636ccd263a7622a9f279839591334149618b8b25b47051238a1ecb490f",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-git_multifile_revision-004",
+      "trajectory_id": "ec270c6a22876c6687f305642f8e4b684b08cac45fd1259ee225549c27493855",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "UNSAFE_ACTION",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_compensating_commit-004",
+      "trajectory_id": "09f50f03cdeddb881ad2e309e5c0bcdecf94ab86ccd86422f0c16fac759a74a8",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-sqlite_delete_dependency-004",
+      "trajectory_id": "14a988a4a95e61efbe4322dc6c969424b03793d90e9c89db456653eeff8d43ee",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-sqlite_unique_swap-004",
+      "trajectory_id": "ecda6724eb4deb783b8d03501c70351642fef89ffee92c102f418d88bc16520f",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_relink-004",
+      "trajectory_id": "29cc91fc7885b498aaa85b6967bc4193f9f54af7e0a7729b2c3ec50ae495993e",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_validation",
+      "exclusion_reasons": {
+        "non_train_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "val",
+      "task_id": "0.3-B-mixed_db_git_report-004",
+      "trajectory_id": "83f502269057dfd832f8fe49a51f850c35e0e0501afadf722618b4473fb1ccd9",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_stage_missing-005",
+      "trajectory_id": "871c8747689838d3d39460e95fa23aa0d0214fa6a50cb9d15a2d04c6a680811d",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "REVISION_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_revision_conflict-005",
+      "trajectory_id": "d22a2f6d868e9d45678861cd8a939e6abd509b7dcba4b8a4b9dc55cff01355a9",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 2
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 1,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_no_change-005",
+      "trajectory_id": "ebdc8bcd4c0b6368687da781f256143e022813e76fbc1ee7af1bcc6ab9699db8",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "FILE_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_checkout_conflict-005",
+      "trajectory_id": "aece244d477e92228b1fbaad02c9ec0ecdb3e1cecd4f2f324d9d7a2495b236ca",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_primary_key-005",
+      "trajectory_id": "824cb07f9e7d8cfc3ee6c4ef103b1e06d0126dc4e5bb09702a71e1b22cfa0d76",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_unique-005",
+      "trajectory_id": "97ab8b2a6a525b8d44af453754a29ccb87ac31e32f949baa9fea2a57a0e2ff3a",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 1
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 3
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "TRANSACTION_FAILED",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 2,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_transaction-005",
+      "trajectory_id": "b2a26deb79c1694490aba75cdb3d14253050938b7f12df4a473332decdfb6edc",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_dependency-005",
+      "trajectory_id": "0419c5d1142149f77b6a5c49a48df684236cca4ecf690273063cbc5262d9938a",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "WRONG_BRANCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_wrong_branch-005",
+      "trajectory_id": "6447e9e363fe81b995e447ca36be5191f671e58fd00e9e3e75b38979baa0ee27",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STALE_INDEX",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_stale_index-005",
+      "trajectory_id": "44ad0ec9323d38524db69d80cfe6163bba845150ea5b61056d2a27ad0a9d44ff",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "DEPENDENCY_MISMATCH",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_multifile_revision-005",
+      "trajectory_id": "cda59e97f2a63dd3784960a5a054a7d9210fa4c762c6da2ac58444e1a986d607",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "UNSAFE_ACTION",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-git_compensating_commit-005",
+      "trajectory_id": "e2628fc95109227543537d0469cd4bea417e84cc346789404863c11555b0b1ff",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 2
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 4
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 3,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_delete_dependency-005",
+      "trajectory_id": "0a4166a08325491660b432c9937e5717aa4caa23a2161874fe08f24c34511f14",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "CONSTRAINT_CONFLICT",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_unique_swap-005",
+      "trajectory_id": "70d293c1d95b7a1f12a5aee355bd7980b4b98c92025e038bcd433d3cae8fc8fd",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 1,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "ood",
+      "exclusion_reasons": {
+        "non_train_episode": 5
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "STATE_DEPENDENCY",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 4,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-sqlite_relink-005",
+      "trajectory_id": "1866ef0d45f2b8714c2c71c34098329f64fb4da0527739be510d22dd9b1869e3",
+      "trusted_decisions": 0
+    },
+    {
+      "behavior_counts": {
+        "diagnostic": 2,
+        "recovery_action": 3
+      },
+      "diagnostic_labels": [],
+      "eval_group": "iid_test",
+      "exclusion_reasons": {
+        "non_train_episode": 6
+      },
+      "final_verifier": {
+        "extra_side_effects": 0,
+        "state_matches": true,
+        "success": true,
+        "unauthorized_modifications": 0
+      },
+      "initial_error_type": "NO_CHANGES",
+      "model_id": "oracle-scripted-mock",
+      "protocol_version": "legacy",
+      "recomputed_behavior_drift_events": 0,
+      "recovery_steps": 5,
+      "replay_verified": true,
+      "source": "oracle_mock",
+      "source_directory": "outputs\\v0.3b_mock_verified",
+      "split": "test",
+      "task_id": "0.3-B-mixed_db_git_report-005",
+      "trajectory_id": "8741b5a21b5015b8b53f06b55a51c7e221356824249d6d299a8f39def9c97524",
+      "trusted_decisions": 0
+    }
+  ],
+  "exclusion_reasons": {
+    "failed_episode": 109,
+    "invalid_decision": 3,
+    "non_train_episode": 188,
+    "post_success_call": 23,
+    "untrusted:invalid": 1,
+    "untrusted:redundant": 4,
+    "untrusted:tool_failed": 3,
+    "untrusted:uncertain": 23,
+    "untrusted_decision": 27
+  },
+  "frozen_task_counts": {
+    "iid_test": 13,
+    "iid_validation": 13,
+    "ood": 18,
+    "train": 52
+  },
+  "hidden_answer_leak_found": false,
+  "history_policy": "Recorded model-visible history is authoritative. Historical calls were serialized individually by the existing Runtime; target raw multi-call groups and FIFO call_id mappings are retained.",
+  "independent_train_tasks": {
+    "combined": 52,
+    "oracle_reference": 52,
+    "teacher": 11
+  },
+  "initial_error_distribution": {
+    "CONSTRAINT_CONFLICT": 24,
+    "DEPENDENCY_MISMATCH": 10,
+    "FILE_CONFLICT": 8,
+    "NO_CHANGES": 31,
+    "REVISION_CONFLICT": 6,
+    "STALE_INDEX": 8,
+    "STATE_DEPENDENCY": 22,
+    "TRANSACTION_FAILED": 6,
+    "UNSAFE_ACTION": 6,
+    "WRONG_BRANCH": 8
+  },
+  "invalid_exported_conversations": 0,
+  "legacy_v03a_derived_rows_excluded": {
+    "legacy_v03a\\llm_sft_train.jsonl": 15,
+    "legacy_v03a\\oracle_mock_sft_train.jsonl": 0
+  },
+  "legacy_v03a_policy": "Nested legacy_v03a derivatives are counted in inventory below but not mixed with the frozen v0.3-B task/schema cohort.",
+  "mechanism_coverage": {
+    "oracle_reference": {
+      "git_checkout_conflict": 12,
+      "git_multifile_revision": 20,
+      "git_no_change": 4,
+      "git_revision_conflict": 12,
+      "git_stage_missing": 20,
+      "git_stale_index": 20,
+      "git_wrong_branch": 20,
+      "mixed_db_git_report": 24,
+      "sqlite_delete_dependency": 16,
+      "sqlite_primary_key": 12,
+      "sqlite_transaction": 12,
+      "sqlite_unique": 12,
+      "sqlite_unique_swap": 20
+    },
+    "teacher": {
+      "git_checkout_conflict": 5,
+      "git_multifile_revision": 12,
+      "git_no_change": 1,
+      "git_stage_missing": 9,
+      "mixed_db_git_report": 49,
+      "sqlite_delete_dependency": 5,
+      "sqlite_unique_swap": 3
+    }
+  },
+  "offline_execution_only": true,
+  "oracle_reference_export_matched": 204,
+  "oracle_reference_export_rows": 208,
+  "original_sources_unchanged": true,
+  "preparation_version": "v0.4-A",
+  "real_teacher_episodes": 33,
+  "real_teacher_independent_tasks": 16,
+  "source_domain_distribution": {
+    "oracle_reference": {
+      "git": 108,
+      "mixed": 24,
+      "sqlite": 72
+    },
+    "teacher": {
+      "git": 27,
+      "mixed": 49,
+      "sqlite": 8
+    }
+  },
+  "source_inventory": [
+    {
+      "directory": "outputs\\v0.3b_sft_reference_final",
+      "exists": true,
+      "jsonl_rows": {
+        "dpo_candidates.jsonl": 0,
+        "llm_sft_train.jsonl": 0,
+        "oracle_reference_sft_train.jsonl": 208,
+        "uncertain_candidates.jsonl": 0
+      },
+      "status": "derived_only_not_an_independent_source"
+    },
+    {
+      "directory": "outputs\\v0.3b_teacher10",
+      "episodes": 10,
+      "exclusion_reasons": {
+        "failed_episode": 27,
+        "invalid_decision": 2,
+        "post_success_call": 14,
+        "untrusted:invalid": 1,
+        "untrusted:redundant": 4,
+        "untrusted:tool_failed": 1,
+        "untrusted:uncertain": 13,
+        "untrusted_decision": 17
+      },
+      "exists": true,
+      "replay_verified": 10,
+      "status": "execution_evidence",
+      "successful": 7,
+      "trustworthy_decisions": 30
+    },
+    {
+      "directory": "outputs\\v0.3c_teacher10_new_stop",
+      "episodes": 10,
+      "exclusion_reasons": {
+        "failed_episode": 23,
+        "invalid_decision": 1,
+        "post_success_call": 4,
+        "untrusted:tool_failed": 2,
+        "untrusted:uncertain": 6,
+        "untrusted_decision": 6
+      },
+      "exists": true,
+      "replay_verified": 10,
+      "status": "execution_evidence",
+      "successful": 7,
+      "trustworthy_decisions": 34
+    },
+    {
+      "directory": "outputs\\v0.3c2_paired_teacher10",
+      "exists": true,
+      "jsonl_rows": {
+        "episodes.jsonl": 20,
+        "pairs.jsonl": 10
+      },
+      "status": "derived_only_not_an_independent_source"
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c1_git_multifile_revision-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c1_git_stale_index-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c1_git_wrong_branch-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 9
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c1_mixed_db_git_report-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 1,
+      "trustworthy_decisions": 6
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c1_sqlite_primary_key-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 7
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c1_sqlite_unique_swap-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 9
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c2_git_multifile_revision-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "untrusted:uncertain": 1,
+        "untrusted_decision": 1
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 1,
+      "trustworthy_decisions": 6
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c2_git_stale_index-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 4
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c2_git_wrong_branch-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c2_mixed_db_git_report-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c2_sqlite_primary_key-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "failed_episode": 6
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 0,
+      "trustworthy_decisions": 0
+    },
+    {
+      "directory": "outputs\\v03c2_eval_c2_sqlite_unique_swap-001",
+      "episodes": 1,
+      "exclusion_reasons": {
+        "post_success_call": 1,
+        "untrusted:uncertain": 2,
+        "untrusted_decision": 2
+      },
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 1,
+      "trustworthy_decisions": 3
+    },
+    {
+      "directory": "outputs\\v03c2_retry_mixed_db_git_report_001",
+      "episodes": 1,
+      "exclusion_reasons": {},
+      "exists": true,
+      "replay_verified": 1,
+      "status": "execution_evidence",
+      "successful": 1,
+      "trustworthy_decisions": 5
+    },
+    {
+      "directory": "outputs\\v0.3b_mock_verified",
+      "episodes": 96,
+      "exclusion_reasons": {
+        "non_train_episode": 188,
+        "post_success_call": 4
+      },
+      "exists": true,
+      "replay_verified": 96,
+      "status": "execution_evidence",
+      "successful": 96,
+      "trustworthy_decisions": 204
+    }
+  ],
+  "source_sha256": {
+    "data\\v0.3b_seed42_final\\config.json": "67acc6102f9a75430177b424a071fba49c8113a539c40c250cdf02de9c1cfdce",
+    "data\\v0.3b_seed42_final\\iid_test.jsonl": "c0f975987cb2221e9d2ee3c96884367787c66e9346964c853adb56b62e294db8",
+    "data\\v0.3b_seed42_final\\iid_validation.jsonl": "cac039f30e65c79b78cbc0db1a7ada95cd7fba399b20beed427364b5a38577e0",
+    "data\\v0.3b_seed42_final\\manifest.json": "27bdffb48597875eb6e44d32d1c09f28adee7865157cdac57582d8eb549f8c61",
+    "data\\v0.3b_seed42_final\\ood.jsonl": "e393c9780c0c71faeb0476cc1bce42d38ef8d6d30663e490b1149646a93ba77f",
+    "data\\v0.3b_seed42_final\\tasks.jsonl": "09b09da3c4cf159d2153923a56fb6e6dcbc58949e8e5858aae53e0ddfcdc329f",
+    "data\\v0.3b_seed42_final\\train.jsonl": "aa250d8085ffa2e55c87a6280928634b1ba77cee0f9f9aea078a7206d77ddd4f",
+    "outputs\\v0.3b_mock_verified\\call_review.jsonl": "383eaa33f95f910d93e7d38a4482f954c1bade424d805aa5b7ead480f8183137",
+    "outputs\\v0.3b_mock_verified\\protocol.json": "5a6581f3e0e3b68fc52cfadcdf4ba3c980c80162281819d7fc3e2a811f4a1949",
+    "outputs\\v0.3b_mock_verified\\quality_report.json": "05ffc7af172e2f280dbd6b80fffdd4c075332ff0222dfa6b6b9884c2a63d66fe",
+    "outputs\\v0.3b_mock_verified\\report.json": "db7be23fb9c08aa0d7497c117114037b08561d02417e803b59f79fd6d3ea229d",
+    "outputs\\v0.3b_mock_verified\\review_manifest.json": "f62306ac8e13b72ee74c6f019a1314b0564f41e7e79357014d6c0b585a498a21",
+    "outputs\\v0.3b_mock_verified\\session.json": "6539395f0350f6105460ed08a724d6d2712022211e1a98f1752167bc856f72f8",
+    "outputs\\v0.3b_mock_verified\\tasks.jsonl": "09b09da3c4cf159d2153923a56fb6e6dcbc58949e8e5858aae53e0ddfcdc329f",
+    "outputs\\v0.3b_mock_verified\\trajectories.jsonl": "14c079d2271756671b4e5756a436731deda89613a20da10f26bbcd2196d90483",
+    "outputs\\v0.3b_sft_reference_final\\dpo_candidates.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs\\v0.3b_sft_reference_final\\legacy_v03a\\candidate_evidence.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs\\v0.3b_sft_reference_final\\legacy_v03a\\llm_sft_train.jsonl": "ab5038afb83a790d7344d30ef72240305cefa7039c4c6b6d3adee1e0b90d53ce",
+    "outputs\\v0.3b_sft_reference_final\\legacy_v03a\\oracle_mock_sft_train.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs\\v0.3b_sft_reference_final\\legacy_v03a\\report.json": "c425b9ba7e82501d2953333c974b5b8232f1bdd4567aaf945fdaedb794f60e1e",
+    "outputs\\v0.3b_sft_reference_final\\llm_sft_train.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs\\v0.3b_sft_reference_final\\oracle_reference_sft_train.jsonl": "54f9251fdac753d1525ca6c126db98564bda68b7402f61b3e0b36f66d2910378",
+    "outputs\\v0.3b_sft_reference_final\\report.json": "df6b51a3e2c202b0fb7b90a706c3deea68bee616dedc628dd12834208924b3e4",
+    "outputs\\v0.3b_sft_reference_final\\uncertain_candidates.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs\\v0.3b_teacher10\\budget.json": "b10a4ff063f345dd400fd021aa6a67ea2809ef175d5d33be5482aa1fd22911d7",
+    "outputs\\v0.3b_teacher10\\call_review.jsonl": "c9e32c659f3324fed267fda01f5f5a8d6f92646793774b2b9151952fd51a8c75",
+    "outputs\\v0.3b_teacher10\\protocol.json": "e6c1cf26eed2c94a71d12e4cbae5e5dc0467473238da1e601c4db2d1796df17e",
+    "outputs\\v0.3b_teacher10\\report.json": "d2bf5fea84f3fb4dae4f37319ec5e1bc53f201b1e3ef6bc4384de460cf94ddfb",
+    "outputs\\v0.3b_teacher10\\session.json": "b80998d2230d1e87050a71b6186ee060fae825e18e5abb803bed6f1ff3c6263c",
+    "outputs\\v0.3b_teacher10\\tasks.jsonl": "d909a1d5c1d3800266524e3f801bcf526453216e5fcb91608d91e1646971365e",
+    "outputs\\v0.3b_teacher10\\trajectories.jsonl": "e7eeb32bc461e5b24af17125cbe17a8bc123b805d4db348ebabca010ae5a7b4d",
+    "outputs\\v0.3c2_paired_teacher10\\episodes.jsonl": "249d1e91f8d1d0b7039f0fabe41fbcb7998c377c8b866602f602198b6c26a84d",
+    "outputs\\v0.3c2_paired_teacher10\\pairs.jsonl": "6d2ca8df79f89b2ab61206e4e11521fe7588d5d505240c8d73703a01fd7c8492",
+    "outputs\\v0.3c2_paired_teacher10\\report.md": "fcd91264a84f6263f3e25bfa6a44568e4a18388e8d61e049515df8b2fdd7a9eb",
+    "outputs\\v0.3c2_paired_teacher10\\summary.json": "1f7a3d7c069f509808f72235d457c0700e79c140ea164e74f60596e0eb5e1ad9",
+    "outputs\\v0.3c_teacher10_new_stop\\budget.json": "a15a7122e36215ef542031c4051713081e04d8bfcbf122534544f300127efc04",
+    "outputs\\v0.3c_teacher10_new_stop\\call_review.jsonl": "496ae7206d349b4a1477da116f85fed0badb168b02aa005ce9754ae895fbe21e",
+    "outputs\\v0.3c_teacher10_new_stop\\protocol.json": "f6da40e74bc0cd08a45f3b830f4c2edfb5aa36827dfc376932a14bff6382debd",
+    "outputs\\v0.3c_teacher10_new_stop\\report.json": "efdd8657b143a3f0974e1f70e6f1a1143939f8c64ca9ef6b1d2e0ffba238cef1",
+    "outputs\\v0.3c_teacher10_new_stop\\session.json": "233f0321a71b2f473491ed0656b8a17ee6a93fbb4c4527325a2a36c6c141f968",
+    "outputs\\v0.3c_teacher10_new_stop\\tasks.jsonl": "d909a1d5c1d3800266524e3f801bcf526453216e5fcb91608d91e1646971365e",
+    "outputs\\v0.3c_teacher10_new_stop\\trajectories.jsonl": "5eac3ce5c83228a6ca718cc7093f2d5b88b0ac79afc4f9a5ddb5202760742866",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\budget.json": "46016e3707984cefac1827681934b6b275a4950ca7c91bd88f95873ac65f3acb",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\call_review.jsonl": "7b6df22dd34c502d963cb114ceb4a9d93797229c9397598afd0f7fb34b549655",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\protocol.json": "72698e338e3fc28dd3d30fd8f9a3b06c2f5429113dc7e93a33282d8aef9593c6",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\report.json": "21037d95b029ed7fbc1b4d784bd865f930c72eec4371e98c11502df27bbc91d9",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\session.json": "db07d099776f78b088313c776a812340399a5ae3c1bd38d4e62fd8184c630051",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\tasks.jsonl": "7dffaeb3aebe366a00972ebeea5e8f29be768540d0e678cbf36a517e48567929",
+    "outputs\\v03c2_eval_c1_git_multifile_revision-001\\trajectories.jsonl": "3909c0b6eaf3a6510593478e66a69ce2af134f4e42bed80623b1d8e8f7528746",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\budget.json": "d2819841ec3d84de86273b87dc5f173e0034c4c216022a38800258d54947023f",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\call_review.jsonl": "3f00b739545c14a740da367a9bac2a1e8de3231d23d14f7d6295ede0c28d3c7b",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\protocol.json": "72698e338e3fc28dd3d30fd8f9a3b06c2f5429113dc7e93a33282d8aef9593c6",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\report.json": "3c2b3a2f1af5c37ded34fb71d68264e42410d8c2ff4b0e7ad66ce671fac7f8e3",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\session.json": "d1f0c7bb8c278eccdb3e08a7c074e9fe19262b67b57a2722c7db7bee1e4f2103",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\tasks.jsonl": "83d85a78e05fc494da644545927615653b2b23338ca601c1f34e2f07b3f31c71",
+    "outputs\\v03c2_eval_c1_git_stale_index-001\\trajectories.jsonl": "cfe3d4c33845bda02c4fbabfb78bc7fc51fe4c4d247964bb906c74ba2a427d69",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\budget.json": "323f759b06aacd0ca1528215dcb764acab6b7cd9657f967e282d198637d449ec",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\call_review.jsonl": "288301db630af8e199301a01c3ee50707c1e487cf363c8bc6937f5d0c297d7b3",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\protocol.json": "72698e338e3fc28dd3d30fd8f9a3b06c2f5429113dc7e93a33282d8aef9593c6",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\report.json": "d660c0246902abf0b6e36d6dd004bf51df2e8a566cbb2693a20e88715384b787",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\session.json": "56c2244a2ed25d768c93eb7f1a0b57caa9f2d1a8e5a84e8048be1ed4d154bd24",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\tasks.jsonl": "8511d0e2e7e626a9016917dbe9a6ac6127c67b8deed694ae5dbdc3c177df987a",
+    "outputs\\v03c2_eval_c1_git_wrong_branch-001\\trajectories.jsonl": "56d8183b04f1f80293916aa9633eb0ce9cbb43ecf5ce5e9a630aa37cbb27f2bb",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\budget.json": "33256b9d98fa29ffab3d03f9d269299b15b5bea611a5d3634009b2cefbb03237",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\call_review.jsonl": "19bc0157c237147a37547142c1ad6f4773dda136534f6f3a7e60f811b279c64c",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\protocol.json": "72698e338e3fc28dd3d30fd8f9a3b06c2f5429113dc7e93a33282d8aef9593c6",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\report.json": "c6b1deda017f0990d92baac5d77724307c7c3af45ef0e3427eff9af9084d04e9",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\session.json": "0d550d687a3590d04bf26d5e5319f8417a382a3a170ceca7cc53c0922adc5d38",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\tasks.jsonl": "91a0d41af596913c3377339f046c8cc23ed5fd76279a559481e4ace97dd27ea2",
+    "outputs\\v03c2_eval_c1_mixed_db_git_report-001\\trajectories.jsonl": "dda81bcd57a2fe4a792fc2727d3df1e0749459601ee6900eb46c2fa64a0748c8",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\budget.json": "c1ce968b7eca229d92026226b0f16136ec0c938d441d29b58dcf80e841259897",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\call_review.jsonl": "3f7c14819d07fa7dbc4ba944eebb86d099f4143ed7a3b77ac4ee58669473fe9f",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\protocol.json": "72698e338e3fc28dd3d30fd8f9a3b06c2f5429113dc7e93a33282d8aef9593c6",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\report.json": "56a31a61c43d1d68b0c0f712b81fe9500ac17f3af73f89216ec0e70c79bf0e95",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\session.json": "13a8894b574077900677624c082b9a67e80fa20a7d87453234b50e1b7b785844",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\tasks.jsonl": "6baeac36823ffe297d13494a22af1b6266c22ae24fee144f9c6643cd5cc50e9e",
+    "outputs\\v03c2_eval_c1_sqlite_primary_key-001\\trajectories.jsonl": "71ee24aa16fe76dbbcb9e4019387090c7f19e2adf89acac721215457878cb2d6",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\budget.json": "d7390a97eb2f10963de46dd96a8c769a615ad7cbb31ab5efa5a541e5761f26bc",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\call_review.jsonl": "589da8f2100d733419e0b187e039a8479ec0ccecaab46461a25249c41ab71154",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\protocol.json": "72698e338e3fc28dd3d30fd8f9a3b06c2f5429113dc7e93a33282d8aef9593c6",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\report.json": "38c518a4616ea171a609d424ec9c08e32b1cee7c837c7db7e5e7aca4aadc3ba7",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\session.json": "a40cfea32579fbcd2dfa5f4475827fe756e56ea4c9a1ffb7c8d307e53ea6b71e",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\tasks.jsonl": "e43e3761619d3ce224dc5d8c8e755072d6a3b7ef54c8ac908b0df0539d8df947",
+    "outputs\\v03c2_eval_c1_sqlite_unique_swap-001\\trajectories.jsonl": "7d319a4e131b133e65eef9580c4f3e5b3e2b14b032bb451dce0d604064c74e5e",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\budget.json": "9e09f8e0446dd4e42be14ebfcea66df05c6146aa8d3e45bda1a244988225fb24",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\call_review.jsonl": "2f6b411d949ef295744f8dac6e61b0890f4b33cde74191562420e5e15278d65d",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\protocol.json": "b02fcb800e532e12b56aeb106328c5022cf8c96db3ae177560d0809b9b4d7fb6",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\report.json": "f813f0181f8f0d3bab7ab3b7beaa8e21ce5297ca85cd2f82c2bba67691cc571a",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\session.json": "91f666f374fc9b84b442cbaf94109ed539be3be27060af3321dc458dfe44cf84",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\tasks.jsonl": "7dffaeb3aebe366a00972ebeea5e8f29be768540d0e678cbf36a517e48567929",
+    "outputs\\v03c2_eval_c2_git_multifile_revision-001\\trajectories.jsonl": "abc8f839bbe2e4668091ce250fdeb9d1bd5f553d8072926840e55a9b13fc780e",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\budget.json": "eca5db65e65e7753377c35663a0905869d9ecc303d0dad1a9d4ae7a417d2bf4e",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\call_review.jsonl": "0cd942c2518896c5a62fbb0ac105e9423685ce475ef84111a3b9265d96dfa317",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\protocol.json": "b02fcb800e532e12b56aeb106328c5022cf8c96db3ae177560d0809b9b4d7fb6",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\report.json": "92a01357f4be3aa4c2472e55a34e0301a32463a74e4c537dbea7e0a6f7874e51",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\session.json": "780808c6c56b94ef12af5bb1213ddd4a1c7ec4a2a69d6d9c9aaef98b1a7817b6",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\tasks.jsonl": "83d85a78e05fc494da644545927615653b2b23338ca601c1f34e2f07b3f31c71",
+    "outputs\\v03c2_eval_c2_git_stale_index-001\\trajectories.jsonl": "c628a305617e47d2cc8110ea26044679127575b47bc61bdf8085f1d587d8c11d",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\budget.json": "dbb6e56b864c98b2f3ec3d752aac87a54cd287ea3e380ed2252e9dea404d7af9",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\call_review.jsonl": "5985613b22cbe2ba7858fd00e4ecfa34d472f879259c2135621b4162c6841b9c",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\protocol.json": "b02fcb800e532e12b56aeb106328c5022cf8c96db3ae177560d0809b9b4d7fb6",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\report.json": "a60c3fe33cd46d73bd45267ef6b33829ac0fd66bb73dd602448655a125fca123",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\session.json": "1f5de09d2627180c0270b73749ecf06bcf3cfc34e1d7975417d59c6d43e790c5",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\tasks.jsonl": "8511d0e2e7e626a9016917dbe9a6ac6127c67b8deed694ae5dbdc3c177df987a",
+    "outputs\\v03c2_eval_c2_git_wrong_branch-001\\trajectories.jsonl": "9c022c5341544f786638acf04c34162a6f7362df6c89f59b30d0301df5a68aa8",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\budget.json": "e6fd66c14a54f5556b7bdcb16db5a2b9056cf91574e42e070bd86bed35ae12dc",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\call_review.jsonl": "6a72d0d21987b4d24ca4ecba4755d5755f9bac0012cb18c5a30b10e164f4483f",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\protocol.json": "b02fcb800e532e12b56aeb106328c5022cf8c96db3ae177560d0809b9b4d7fb6",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\report.json": "7a1254a65d137a4a22f582487b49a0866e8cb18c5e695ef5753f7530699a7048",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\session.json": "f1abf9e119150aee3b4880b5833c8862b9243d67645df251b759dd5206fc0d3f",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\tasks.jsonl": "91a0d41af596913c3377339f046c8cc23ed5fd76279a559481e4ace97dd27ea2",
+    "outputs\\v03c2_eval_c2_mixed_db_git_report-001\\trajectories.jsonl": "2da320e430d41a51fff5808c386cecac4d59954110d6557da5376b0968971677",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\budget.json": "8df45a8dfefaca9de8373b280710021f162a37d1d25b4b1fe3424af837ff9f14",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\call_review.jsonl": "d36e9f470947ba2da2115320e422210ba46fa31b711e602ccddefbbf0487345e",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\protocol.json": "b02fcb800e532e12b56aeb106328c5022cf8c96db3ae177560d0809b9b4d7fb6",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\report.json": "180c4caf7e0eb1acee9432ff5fa32ebf306b8d44bb7bc41a754916aceb465a9c",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\session.json": "440eeb18993567c2fc6c631173f8f0a201b6afee67de260bd5a6c24855b227fd",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\tasks.jsonl": "6baeac36823ffe297d13494a22af1b6266c22ae24fee144f9c6643cd5cc50e9e",
+    "outputs\\v03c2_eval_c2_sqlite_primary_key-001\\trajectories.jsonl": "cc6e6cb4f11174d1cec9150816bea83216eab4893baa5893e33ff38f6b0178bc",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\budget.json": "de7898e6affc30dcc43fcb0556454e63928a210ef6bb1b63c39d81ca71974041",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\call_review.jsonl": "7d447750345b162e7df0dae943dc7c463fde77694d78e6e82645068da6f42f20",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\protocol.json": "b02fcb800e532e12b56aeb106328c5022cf8c96db3ae177560d0809b9b4d7fb6",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\report.json": "18496068fe23ab4c289211991d72937f2316312a11d82d09cb786db880f56596",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\session.json": "6cf0ea80e649edc073e5ddb200d40e7b9c0e5e00fad3c3283cfc550340220bd3",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\tasks.jsonl": "e43e3761619d3ce224dc5d8c8e755072d6a3b7ef54c8ac908b0df0539d8df947",
+    "outputs\\v03c2_eval_c2_sqlite_unique_swap-001\\trajectories.jsonl": "43a27662a30150ef9f982a116f871c2f38ba8e999cf04c1d96545c5492aa14a5",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\budget.json": "3c1f08c4949af82882e47572ef32da6b5a61b2441b26be37a2fc3998e8d56b4d",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\call_review.jsonl": "a88f4384aa9d192d8cd33ea87a1f2fc4d467370afbc5ad74f551588bfdf0148e",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\protocol.json": "19d2e6fc3a984e6a2a26a9c6be054a4f2b49e02f61593b168f9dab0958342099",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\report.json": "93b73e0ad1380ce6cd2074ad4faffcf76131eccadaf759e845e19a6b4fb0cf1c",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\session.json": "a9b5f42ff625c62a9b7219e1f89e051607bfde8b4d83a7f962a7605b14a49d82",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\tasks.jsonl": "91a0d41af596913c3377339f046c8cc23ed5fd76279a559481e4ace97dd27ea2",
+    "outputs\\v03c2_retry_mixed_db_git_report_001\\trajectories.jsonl": "c0fdda1626cbc3abb9c8096fc24474117ea1fe7c40a316af5e5a73d05007e8fb"
+  },
+  "target_kind_distribution": {
+    "oracle_reference": {
+      "final_answer": 52,
+      "tool_call": 152
+    },
+    "teacher": {
+      "final_answer": 12,
+      "tool_call": 72
+    }
+  },
+  "trajectory_length_distribution": {
+    "1": 6,
+    "11": 2,
+    "12": 6,
+    "2": 30,
+    "3": 14,
+    "4": 43,
+    "5": 9,
+    "6": 3,
+    "7": 4,
+    "8": 11,
+    "9": 1
+  },
+  "trust_policy": "Successful full-Verifier episodes only; per-decision replay/behavior evidence; uncertain, failures, redundant mutations and post-success calls excluded. Historical assistant actions remain masked.",
+  "trustworthy_decisions": {
+    "oracle_reference": 204,
+    "teacher": 84
+  },
+  "unmatched_reference_rows": 4
+}
