@@ -1,3 +1,7 @@
+> Kaggle Dry-run 与 Base Smoke 的完整命令和文件检查见
+> [运行指南](docs/kaggle_dry_run_base_smoke.md)。当前仅克隆仓库仍缺 SFT 导出及可信准备来源，
+> 需要补齐文件后才能执行训练 Dry-run 与真实 Base 推理。
+
 # RecoveryAgent v0.3-A - Stateful Recovery & Trajectory Pipeline
 
 独立、确定性的工具调用错误恢复实验环境。运行时仅依赖 Python 标准库，
@@ -973,42 +977,27 @@ Teacher 仅有 11 个可信独立任务，SQLite/部分机制覆盖不足。进�
 
 ### B.0 路径与交付
 
-相对 CLI/配置路径统一基于项目根目录，与终端 cwd 无关。无环境变量时保持 Windows
-现有 data/outputs 默认值；服务器显式使用 `RECOVERY_DATA_ROOT=/data`。
-旧 CLI 只做路径解析适配，没有重新设计数据格式。绝对路径按原值处理；
-显式相对路径仍基于项目，配置的默认目录分别来自下列环境变量：
+代码直接从 GitHub 克隆到 `/kaggle/working/RecoveryAgent`，训练器和测评入口共用
+`WorkspacePaths`。相对路径基于仓库根目录，与终端 cwd 无关。训练数据直接使用仓库
+`data/`，无需另挂 Kaggle 数据集或搬到 `/data`。不要设置 `RECOVERY_DATA_ROOT`；它仅用于旧版单根服务器布局。
 
-| 配置 | 默认服务器位置 |
+| 配置 | Kaggle 位置 |
 | --- | --- |
-| `RECOVERY_MODEL_PATH` | /data/models/Qwen3-1.7B |
-| `RECOVERY_DATASET_PATH` | /data/datasets/recovery_agent |
-| `RECOVERY_SFT_PATH` | /data/datasets/recovery_agent/v0.4a_training_readiness |
-| `RECOVERY_FROZEN_PATH` | /data/datasets/recovery_agent/v0.3b_seed42_final |
-| `RECOVERY_OUTPUT_PATH` | /data/outputs/recovery_agent |
-| `RECOVERY_CHECKPOINT_PATH` | /data/checkpoints/recovery_agent |
-| `RECOVERY_CACHE_PATH` | /data/cache/huggingface |
-| `RECOVERY_TOKENIZER_PATH` | /data/models/Qwen3-1.7B |
-| `RECOVERY_DELIVERY_MANIFEST` | /data/datasets/recovery_agent/delivery_manifest.json |
+| `RECOVERY_MODEL_PATH` | `/kaggle/input/models/zhuzhu135/qwen3-1-7b/transformers/default/3` |
+| `RECOVERY_TOKENIZER_PATH` | 同上；CPU 准备默认也可使用仓库 `assets/tokenizers/Qwen3-1.7B` |
+| `RECOVERY_DATASET_PATH` | `/kaggle/working/RecoveryAgent/data` |
+| `RECOVERY_FROZEN_PATH` | `/kaggle/working/RecoveryAgent/data/v0.3b_seed42_final` |
+| `RECOVERY_SFT_PATH` | `/kaggle/working/RecoveryAgent/data/v0.4a_training_readiness` |
+| `RECOVERY_DELIVERY_MANIFEST` | `/kaggle/working/RecoveryAgent/data/delivery_manifest.json` |
+| `RECOVERY_OUTPUT_PATH` | `/kaggle/working/RecoveryAgent/outputs` |
+| `RECOVERY_CHECKPOINT_PATH` | `/kaggle/working/RecoveryAgent/checkpoints` |
+| `RECOVERY_CACHE_PATH` | `/kaggle/working/RecoveryAgent/cache/huggingface` |
 
-`configs/gpu_server.env.example` 仅由用户 source，不修改 .bashrc 或 Shell 配置。
-`setup_gpu_workspace.py` 幂等建目录，验证写权限，不搬迁/替换现有文件。
-`check_gpu_environment.py` 检查 CUDA、显存、BF16、依赖、Git、路径/权限和本地完整模型分片，
-记录驱动、版本与每个模型分片 SHA-256；缺失时返回退出码 2，不自动下载/安装。
-
-Windows 已生成 `outputs/v0.4b_delivery/delivery_manifest.json`，包含 18 个现有文件的大小、
-SHA-256、源位置和服务器目标位置。通过 code-server 手动交付：
-
-| 本地来源 | 服务器目标 |
-| --- | --- |
-| `data/v0.3b_seed42_final/` | /data/datasets/recovery_agent/v0.3b_seed42_final/ |
-| `outputs/v0.4a_training_readiness/` | /data/datasets/recovery_agent/v0.4a_training_readiness/ |
-| `outputs/v0.4b_delivery/delivery_manifest.json` | /data/datasets/recovery_agent/delivery_manifest.json |
-| `assets/tokenizers/Qwen3-1.7B/` 的原始分词/config 文件 | /data/models/Qwen3-1.7B/ |
-
-用户另行提供同一 Qwen3-1.7B 的本地 safetensors 权重及完整索引/分片。
-本轮无权重可交付，清单明确标注缺失；GPU 预检后才记录真实分片哈希。
-原始 tokenizer/config 和官方 chat template 必须匹配 v0.4-A 哈希，不静默接受另一版本。
-所有冻结来源和既有可信轨迹只读。
+`source configs/gpu_server.env.example` 可显式应用上述配置并清除旧 `RECOVERY_DATA_ROOT`。
+模型目录只读：初始化跳过该目录的创建和写权限探测，GPU 预检仍检查完整权重和哈希。
+克隆仓库后若缺少 SFT 导出与交付清单，先执行下方准备命令；原始 JSONL 不能直接代替
+带 Token IDs/Labels 的 SFT 文件。准备程序校验来源、模板和哈希，缺少可信来源时会明确失败。
+`setup_gpu_workspace.py --write-delivery` 生成清单，已有清单只验证，不覆盖。
 
 ### B.1 三个独立入口
 
@@ -1016,7 +1005,7 @@ SHA-256、源位置和服务器目标位置。通过 code-server 手动交付：
 LR=0.0002、batch=1、gradient accumulation=8、epochs=2、seed=42、
 gradient checkpointing=true、BF16、max_seq_length=4096。
 `model.path: null` 表示从 RECOVERY_MODEL_PATH/Workspace 获取路径，服务器有效值为
-/data/models/Qwen3-1.7B；可在 YAML 或 CLI 单独指定模型、数据、输出和 checkpoint 目录。
+/kaggle/input/models/zhuzhu135/qwen3-1-7b/transformers/default/3；可在 YAML 或 CLI 单独指定模型、数据、输出和 checkpoint 目录。
 
 - 默认仅训练 Oracle 204 条；Teacher 84 条保持独立，须显式 `--source teacher` 并选新输出。
 - 不调用 Tokenizer 重写数据，不追加 EOS，不裁剪/过滤超长样本，任何 SHA/来源/Split/Mask
@@ -1042,6 +1031,7 @@ Windows 本地：
 
 ```powershell
 cd D:\pyproject\RecoveryAgent
+python scripts/prepare_qwen3_sft.py --max-seq-length 8192
 python scripts/setup_gpu_workspace.py --write-delivery
 python scripts/train_qwen3_lora.py --mode dry-run --output outputs/v0.4b_cpu_dryrun_reproduce
 python scripts/evaluate_local_model.py --execution mock --split train_smoke --output outputs/v0.4b_mock_reproduce
@@ -1052,37 +1042,28 @@ python -m pytest -q
 `--mode dry-run` 为默认，不 import torch、不加载模型、不启动训练。
 GPU One-step 只在 `--mode smoke` 执行；完整训练只在 `--mode train` 执行。
 
-### Linux GPU 主机手动启动
+### Kaggle GPU 启动
 
-项目放在 /data/RecoveryAgent。以下命令由用户在 code-server Terminal 手动执行；
-权重及交付数据须先到位，脚本不会自动获取。PyTorch CUDA wheel 版本按现有驱动选择，
-下面示例使用官方 cu126；无需 torchvision/torchaudio。Accelerate 是 PEFT loader 的依赖，
-未使用 Accelerator、分布式或 DeepSpeed。
+先从你的 GitHub 仓库克隆代码到 `/kaggle/working/RecoveryAgent`，并在 Kaggle Notebook
+添加上述 Qwen3 模型、启用 GPU。以下命令在 Bash 中运行（Notebook 可用 `%%bash`）：
 
 ```bash
-cd /data/RecoveryAgent
-python3.11 -m venv /data/RecoveryAgent/.venv
-source /data/RecoveryAgent/.venv/bin/activate
+cd /kaggle/working/RecoveryAgent
 source configs/gpu_server.env.example
-export PIP_CACHE_DIR=/data/cache/pip
-python -m pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cu126
 python -m pip install -r requirements-gpu.txt
-
 python scripts/setup_gpu_workspace.py
-python scripts/check_gpu_environment.py --output /data/outputs/recovery_agent/gpu_preflight.json
+# 先从可信 v0.4-A 导出补齐 data/v0.4a_training_readiness 六个文件。
+# 只有补齐原始 Oracle/Teacher 证据后才可从头准备：
+# python scripts/prepare_qwen3_sft.py --max-seq-length 8192
+python scripts/setup_gpu_workspace.py --write-delivery
 python scripts/train_qwen3_lora.py --mode dry-run
-
-# 先验证真实 Base 在三个 Train 任务的工具链路，不用 Val/Test 调试运行错误。
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split train_smoke --output /data/outputs/recovery_agent/base_train_smoke
-
-# 单 Batch Forward / Backward / Optimizer Step；不自动继续训练。
+python scripts/check_gpu_environment.py --output outputs/gpu_preflight.json
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split train_smoke --output outputs/base_train_smoke
 python scripts/train_qwen3_lora.py --mode smoke
-
-# 预检/Smoke 通过后，用户独立启动完整 Oracle-SFT。
+# 预检和 Smoke 通过后执行完整训练。
 python scripts/train_qwen3_lora.py --mode train
-
-# 示例：中断后从最近完整 checkpoint 恢复，保持相同配置。
-python scripts/train_qwen3_lora.py --mode train --resume /data/checkpoints/recovery_agent/qwen3_1.7b_oracle_lora/step-000020
+# 中断后从最近完整 checkpoint 恢复。
+python scripts/train_qwen3_lora.py --mode train --resume checkpoints/qwen3_1.7b_oracle_lora/step-000020
 ```
 
 训练依赖固定于 `requirements-gpu.txt`：Torch 2.7.1、Transformers 4.51.3、PEFT 0.15.2、
@@ -1113,14 +1094,14 @@ Base/Adapter 除权重外必须同配置，并使用独立输出目录。允许 
 
 ```bash
 # IID Validation 13 个，用于配置/Checkpoint 选择；不同 checkpoint 选新目录。
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_validation --output /data/outputs/recovery_agent/base_iid_validation
-python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /data/outputs/recovery_agent/qwen3_1.7b_oracle_lora/adapter --split iid_validation --output /data/outputs/recovery_agent/sft_iid_validation
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_validation --output /kaggle/working/RecoveryAgent/outputs/base_iid_validation
+python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split iid_validation --output /kaggle/working/RecoveryAgent/outputs/sft_iid_validation
 
 # 冻结已选配置后独立评测 IID Test 13、OOD Test 18，不用来训练/选超参/调 Prompt。
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_test --output /data/outputs/recovery_agent/base_iid_test
-python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /data/outputs/recovery_agent/qwen3_1.7b_oracle_lora/adapter --split iid_test --output /data/outputs/recovery_agent/sft_iid_test
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split ood --output /data/outputs/recovery_agent/base_ood
-python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /data/outputs/recovery_agent/qwen3_1.7b_oracle_lora/adapter --split ood --output /data/outputs/recovery_agent/sft_ood
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_test --output /kaggle/working/RecoveryAgent/outputs/base_iid_test
+python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split iid_test --output /kaggle/working/RecoveryAgent/outputs/sft_iid_test
+python scripts/evaluate_local_model.py --execution gpu --model-mode base --split ood --output /kaggle/working/RecoveryAgent/outputs/base_ood
+python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split ood --output /kaggle/working/RecoveryAgent/outputs/sft_ood
 ```
 
 新增 `benchmark_report.json` 给出任务级轨迹、分机制 numerator/denominator、Final/Ever/

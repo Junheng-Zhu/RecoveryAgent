@@ -19,7 +19,7 @@ def test_relative_paths_ignore_cwd(tmp_path, monkeypatch):
     args = Namespace(output="outputs/example")
     resolve_cli_paths(args, ["output"])
     assert args.output == ROOT/"outputs/example"
-    assert WorkspacePaths.from_env({}).sft == ROOT/"outputs/v0.4a_training_readiness"
+    assert WorkspacePaths.from_env({}).sft == ROOT/"data/v0.4a_training_readiness"
 
 def test_configured_workspace_and_idempotent_setup(tmp_path):
     storage = tmp_path/"data"
@@ -70,3 +70,23 @@ def test_existing_clis_from_another_directory(tmp_path):
     result = subprocess.run([sys.executable, str(ROOT/"scripts/harden_data.py"), "collect", "--help"],
                             cwd=tmp_path, capture_output=True, text=True)
     assert result.returncode == 0
+
+
+def test_kaggle_clone_paths_and_readonly_model(tmp_path, monkeypatch):
+    from recovery_agent.paths import KAGGLE_MODEL_PATH
+    project = tmp_path/"RecoveryAgent"
+    workspace = WorkspacePaths.from_env({}, project)
+    assert workspace.model == KAGGLE_MODEL_PATH
+    assert workspace.datasets == project/"data"
+    assert workspace.sft == project/"data/v0.4a_training_readiness"
+    assert workspace.frozen == project/"data/v0.3b_seed42_final"
+    assert workspace.delivery == project/"data/delivery_manifest.json"
+    original_mkdir = Path.mkdir
+    def guarded_mkdir(path, *args, **kwargs):
+        assert not path.is_relative_to(Path('/kaggle/input'))
+        return original_mkdir(path, *args, **kwargs)
+    monkeypatch.setattr(Path, 'mkdir', guarded_mkdir)
+    workspace.initialize()
+    assert workspace.outputs.is_dir()
+    overridden = WorkspacePaths.from_env({'RECOVERY_MODEL_PATH': 'custom_model'}, project)
+    assert overridden.model == project/'custom_model'

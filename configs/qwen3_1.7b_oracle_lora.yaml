@@ -1,4 +1,4 @@
-# Effective model path resolves through RECOVERY_MODEL_PATH (/data/models/Qwen3-1.7B on server).
+# Effective model path resolves through RECOVERY_MODEL_PATH (Kaggle mounted Qwen3-1.7B weights by default).
 model:
   path: null
   max_seq_length: 4096
