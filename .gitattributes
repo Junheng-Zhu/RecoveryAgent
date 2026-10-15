@@ -1,2 +1,7 @@
 # Preserve exact bytes of the frozen config referenced by manifest SHA-256.
 data/v0.3b_seed42_final/config.json -text whitespace=cr-at-eol
+data/v0.3b_seed42_final/manifest.json -text whitespace=cr-at-eol
+data/v0.4a_training_readiness/mask_examples.json -text whitespace=cr-at-eol
+data/v0.4a_training_readiness/readiness_report.md -text whitespace=cr-at-eol
+data/v0.4a_training_readiness/source_audit.json -text whitespace=cr-at-eol
+data/v0.4a_training_readiness/token_stats.json -text whitespace=cr-at-eol

@@ -1,6 +1,6 @@
 > Kaggle Dry-run 与 Base Smoke 的完整命令和文件检查见
-> [运行指南](docs/kaggle_dry_run_base_smoke.md)。当前仅克隆仓库仍缺 SFT 导出及可信准备来源，
-> 需要补齐文件后才能执行训练 Dry-run 与真实 Base 推理。
+> [运行指南](docs/kaggle_dry_run_base_smoke.md)。SFT 导出和交付清单已在 `data/` 中，
+> 可直接读取现有文件；真实 Base 推理仍需挂载模型并通过 GPU 预检。
 
 # RecoveryAgent v0.3-A - Stateful Recovery & Trajectory Pipeline
 
@@ -995,8 +995,8 @@ Teacher 仅有 11 个可信独立任务，SQLite/部分机制覆盖不足。进�
 
 `source configs/gpu_server.env.example` 可显式应用上述配置并清除旧 `RECOVERY_DATA_ROOT`。
 模型目录只读：初始化跳过该目录的创建和写权限探测，GPU 预检仍检查完整权重和哈希。
-克隆仓库后若缺少 SFT 导出与交付清单，先执行下方准备命令；原始 JSONL 不能直接代替
-带 Token IDs/Labels 的 SFT 文件。准备程序校验来源、模板和哈希，缺少可信来源时会明确失败。
+仓库已包含 SFT 导出与交付清单，可直接读取。无需从头执行准备命令；若主动重建，
+需另行提供可信 Oracle/Teacher 轨迹。原始 JSONL 不能直接代替带 Token IDs/Labels 的 SFT 文件。
 `setup_gpu_workspace.py --write-delivery` 生成清单，已有清单只验证，不覆盖。
 
 ### B.1 三个独立入口
@@ -1052,7 +1052,7 @@ cd /kaggle/working/RecoveryAgent
 source configs/gpu_server.env.example
 python -m pip install -r requirements-gpu.txt
 python scripts/setup_gpu_workspace.py
-# 先从可信 v0.4-A 导出补齐 data/v0.4a_training_readiness 六个文件。
+# data/v0.4a_training_readiness 六个文件和交付清单已随仓库提供。
 # 只有补齐原始 Oracle/Teacher 证据后才可从头准备：
 # python scripts/prepare_qwen3_sft.py --max-seq-length 8192
 python scripts/setup_gpu_workspace.py --write-delivery

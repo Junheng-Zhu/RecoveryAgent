@@ -2,29 +2,25 @@
 
 ## 当前仓库能否直接运行（2026-10-14）
 
-**仅克隆当前 GitHub 仓库，即使另加模型权重，也不能完成训练 Dry-run 或 GPU Base Smoke。**
-代码、固定依赖列表、官方 tokenizer、冻结任务已在仓库；Kaggle 路径已经配置。
-但 `outputs/` 被 Git 忽略，训练 SFT 导出和交付清单尚未提交；从头准备 SFT 所需的
-可信 Oracle/Teacher 原始轨迹与派生参考文件也不在仓库。不要重新生成 Teacher 数据或用 Mock 替代。
+**最新 `main` 已包含 SFT 六个文件和交付清单。** 除外部模型权重及 GPU/依赖环境外，
+常规 Dry-run 与 Base Smoke 所需的数据文件已在仓库，无需重新准备 SFT。
+此前“文件尚未提交”的判断基于落后的本地分支，已更正。
 
-本次已恢复冻结 `config.json` 的原始 CRLF 字节，精确匹配原 manifest 的 SHA-256，
-并以 `.gitattributes` 防止克隆时换行转换；没有修改清单哈希或任务内容。
-Base 的配置 Dry-run 可用冻结任务执行；训练 Dry-run 和真实 Base 推理还需要下列文件。
+本次核验发现 Git 换行转换会使部分已交付文件不匹配 SHA-256。
+修复将文件字节恢复为与原清单精确匹配的 CRLF，并以 `.gitattributes` 保留字节；
+不修改 manifest 哈希、任务内容或训练标签。请使用包含此修复的版本。
 
-| 必需文件 | Kaggle 位置 | 当前是否随 Git 克隆 |
+| 必需文件 | Kaggle 位置 | 是否随 Git 克隆 |
 | --- | --- | --- |
 | 冻结任务及 manifest | `data/v0.3b_seed42_final/` | 是 |
-| SFT 六个文件 | `data/v0.4a_training_readiness/` | 否 |
-| 交付清单 | `data/delivery_manifest.json` | 否；文件就位后生成 |
+| SFT 六个文件 | `data/v0.4a_training_readiness/` | 是 |
+| 交付清单 | `data/delivery_manifest.json` | 是；初始化时验证已有清单 |
 | 完整 Qwen3 权重/config/tokenizer | `/kaggle/input/models/zhuzhu135/qwen3-1-7b/transformers/default/3` | 外部模型挂载 |
 
 SFT 六个文件：`oracle_sft.jsonl`、`teacher_sft.jsonl`、`source_audit.json`、
 `token_stats.json`、`mask_examples.json`、`readiness_report.md`。
-从原开发机取回经过验证的 v0.4-A 导出，放入仓库 `data/v0.4a_training_readiness/` 后，
-再生成交付清单。文件必须通过原有哈希、来源、标签、模板校验。
-若要从头执行 `prepare_qwen3_sft.py`，必须先补齐其 `source_directories()` 指定的
-Oracle/Teacher 证据，包括 `outputs/v0.3b_sft_reference_final/oracle_reference_sft_train.jsonl`
-和对应任务/轨迹；当前克隆中的文件不足以重建原可信训练集。
+直接使用现有导出即可。只有主动重建 SFT 时，才需要另行提供 `outputs/` 下的
+原始 Oracle/Teacher 可信证据；这些来源不随 Git 克隆，不影响读取现有已验证导出。
 
 ## 1. 克隆、配置与依赖
 
@@ -60,13 +56,13 @@ python scripts/evaluate_local_model.py \
 预期输出 `status: EVALUATION_CONFIG_ONLY`、`tasks: 3`、
 `gpu_inference_verified: false`。这只确认路径、冻结任务与评测配置。
 
-## 3. 训练数据 Dry-run（先补齐 SFT 六个文件）
+## 3. 训练数据 Dry-run（使用仓库已有 SFT）
 
 ```bash
 set -euo pipefail
 cd /kaggle/working/RecoveryAgent
 source configs/gpu_server.env.example
-# 缺文件则立即停止；先从可信导出补齐，不能跳过校验。
+# 检查克隆得到的文件；缺失或不匹配时立即停止。
 for name in oracle_sft.jsonl teacher_sft.jsonl source_audit.json token_stats.json mask_examples.json readiness_report.md; do
   test -s "$RECOVERY_SFT_PATH/$name"
 done
@@ -105,9 +101,8 @@ python scripts/evaluate_local_model.py \
 
 ## 本地核验边界
 
-本轮仅做 CPU 校验和配置 Dry-run；没有 Kaggle 模型挂载或 GPU，未执行真实 Base 推理。
-已确认冻结字节完整性。仍缺 SFT 导出与可信来源，训练 Dry-run 保持阻塞，不能承诺直接克隆可完整运行。
-
-本地相关测试结果：12 passed、3 failed。三个失败均为缺少 SFT 导出或交付清单；
-Base 配置 Dry-run 实测返回 `EVALUATION_CONFIG_ONLY`，选中 3 个任务。
-来源审计实测在缺少 Oracle 派生参考文件处失败。
+更新到最新 `main` 并恢复原始文件字节后，相关测试 **15 passed**；
+训练 Dry-run 实测返回 `CPU_DATA_DRY_RUN_PASSED`。Base 配置 Dry-run 选中 3 个任务。
+CPU 核验使用仓库 tokenizer；Kaggle 环境示例使用模型挂载中的 tokenizer，
+其 config/template 必须匹配数据记录的哈希。真实 GPU Base Smoke 尚未执行，
+仍需检查 Kaggle GPU、依赖、显存、BF16 支持及挂载权重的完整性。
