@@ -33,3 +33,11 @@ Base 配置 Dry-run、SFT 文件检查、训练 Dry-run、GPU 预检与 Base Smo
 冻结 config 的哈希差异已确认为 Git 换行转换：恢复 CRLF 后精确匹配原始清单，
 新增 `.gitattributes` 保留其字节。安装 PyYAML 后相关测试为 12 passed、3 failed；
 剩余失败均来自未交付的 SFT 文件/清单。真实 Base 推理仍未执行。
+
+## 最新 main 数据核验更正
+
+此前缺少数据的结论基于落后的本地分支。最新 main 已包含六个 SFT 文件及
+`data/delivery_manifest.json`。新增恢复五个文件原始 CRLF 字节并固定 Git 属性，
+所有字节精确匹配既有交付清单，未改清单哈希。相关测试 15 passed；
+训练 Dry-run 返回 CPU_DATA_DRY_RUN_PASSED。现有导出无需重建，只有主动
+重建才依赖未提交的原始可信轨迹。Kaggle GPU Base Smoke 仍待实际硬件验证。
