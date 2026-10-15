@@ -55,3 +55,10 @@ Base 配置 Dry-run、SFT 文件检查、训练 Dry-run、GPU 预检与 Base Smo
 以及独立 Validation 命令。补充 Kaggle 输出位置、版本 Output 保存、归档下载与跨会话恢复，
 区分最终 Adapter 与带 optimizer 状态的训练 checkpoint。所有示例保留 Notebook 语法；
 本轮为文档变更，未执行真实 GPU 训练或正式测试。
+
+## Kaggle Qwen3 导入故障说明
+
+用户真实 traceback 显示 GPU 预检通过后，Transformers 的 Qwen3 类导入被
+预装 torchvision 的 `operator torchvision::nms does not exist` 阻塞。
+文档增加移除不需要的 torchvision、检查 Qwen3 类导入及重试指引；保留 torch，
+不修改权重、任务或校验规则。此修复指引尚未在用户 Kaggle GPU 上实测。

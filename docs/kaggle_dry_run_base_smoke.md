@@ -66,6 +66,25 @@ os.environ.pop("RECOVERY_DATA_ROOT", None)
 !python -m pip install -r requirements-gpu.txt
 ```
 
+Kaggle 预装的 torchvision 可能与上面固定安装的 PyTorch 不兼容，导致
+`RuntimeError: operator torchvision::nms does not exist`。本项目为纯文本 Qwen3，
+无需 torchvision；在本 Notebook 环境中移除它，保留 PyTorch：
+
+```python
+!python -m pip uninstall -y torchvision
+```
+
+检查真实 Qwen3 模型类能否导入（不加载权重、不运行 GPU 推理）：
+
+```python
+!python -c "import torch, transformers; from transformers import Qwen3ForCausalLM; print('Qwen3 import OK', torch.__version__, transformers.__version__)"
+```
+
+看到 `Qwen3 import OK` 后再继续。`gpu_verified: true` 只代表已有 GPU/路径检查通过，
+不保证 Transformers 延迟加载的模型类及其可选依赖都能导入。
+上面 `!python` 每次启动新进程，卸载后重跑导入检查及评测即可；若在 Notebook 内核中
+直接导入过 torch/transformers，则重启内核并重新执行环境配置。
+
 ```python
 !python scripts/setup_gpu_workspace.py
 ```
@@ -277,3 +296,13 @@ checkpoint 及归档可能较大，需留意磁盘余量；确认备份后再清
 CPU 核验使用仓库 tokenizer；Kaggle 环境示例使用模型挂载中的 tokenizer，
 其 config/template 必须匹配数据记录的哈希。真实 GPU Base Smoke 尚未执行，
 仍需检查 Kaggle GPU、依赖、显存、BF16 支持及挂载权重的完整性。
+
+## 故障排查：Base Smoke 出现 torchvision::nms
+
+若预检断言已通过，而 `AutoModelForCausalLM.from_pretrained` 报错
+`Failed to import ...modeling_qwen3`，最内层为 `operator torchvision::nms does not exist`，
+按第 1 节卸载不需要的 torchvision，再执行 Qwen3 模型类导入检查。
+这不是路径、JSON 或冻结任务解析错误，无需修改模型文件或关闭数据校验。
+导入检查成功后重跑原 Base Smoke 命令。此导入失败发生在 Collector 创建评测输出之前；
+若输出目录确实为空可沿用，若已存在其他运行结果则选择新的 `--output`。
+本次根据用户 Kaggle traceback 定位；本地无该 Kaggle GPU 环境，未实测硬件推理。

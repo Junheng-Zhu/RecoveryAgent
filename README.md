@@ -1047,7 +1047,8 @@ GPU One-step 只在 `--mode smoke` 执行；完整训练只在 `--mode train` �
 在 Kaggle Notebook 的默认 Python 单元格中使用 `%cd`、`!git`、`!python`，
 不要直接粘贴 Bash 的 `set` / `source`。先按
 [运行指南](docs/kaggle_dry_run_base_smoke.md) 完成克隆、`%env` 环境配置和依赖安装，
-再分别执行以下单元格：
+再分别执行以下单元格。若出现 `torchvision::nms does not exist`，按指南移除
+不需要的 torchvision 并检查 Qwen3 模型类导入后重试：
 
 ```python
 %cd /kaggle/working/RecoveryAgent
