@@ -142,6 +142,134 @@ assert preflight["gpu_verified"] and not preflight["blockers"], preflight["block
 重复运行请换新输出目录；脚本拒绝覆盖旧报告。恢复同一次评测可显式 `--resume`。
 `train_qwen3_lora.py --mode smoke` 是 LoRA 一步训练测试，与本页 Base Smoke 不同。
 
+## 5. 完整 LoRA-SFT 训练
+
+完成数据 Dry-run、GPU 预检及 Base Smoke 后，先执行一步训练 Smoke，检查真实
+Forward/Backward、梯度和参数更新。它写入独立的 `_gpu_smoke` 目录。
+各代码块分别运行，确认上一格成功后继续。
+
+```python
+%cd /kaggle/working/RecoveryAgent
+!python scripts/train_qwen3_lora.py --mode smoke
+```
+
+完整训练默认使用 Oracle 204 条，2 epochs，batch=1、梯度累积=8，预计 52 次优化器更新。
+Teacher 不自动混入。默认训练名为 `qwen3_1.7b_oracle_lora`：
+
+```python
+!python scripts/train_qwen3_lora.py --mode train
+```
+
+完成时检查 `outputs/qwen3_1.7b_oracle_lora/training_report.json`，最终 Adapter 在
+`outputs/qwen3_1.7b_oracle_lora/adapter/`，不是完整合并的 Base 权重。
+从已有完整 checkpoint 恢复（将示例 step 换成实际最新完整目录；只在需要恢复时执行）：
+
+```python
+!python scripts/train_qwen3_lora.py --mode train --resume checkpoints/qwen3_1.7b_oracle_lora/step-000020
+```
+
+Resume 需要同一训练配置、数据、Base/Tokenizer 及依赖版本。跨 Kaggle 会话须先恢复
+checkpoint 和原运行 `outputs/qwen3_1.7b_oracle_lora/`；不要用一步 Smoke checkpoint 恢复完整训练。
+已完成的运行不要重启覆盖；新实验用新的 `--output` 和 `--checkpoint-path`。
+
+## 6. Base 与已训练 SFT 的正式测试：各 31 个任务
+
+`train_smoke` 是 3 个训练集任务；正式测试为 **IID Test 13 + OOD 18 = 31**。
+Base 和 SFT 各执行两条命令，共 62 次任务运行。以下四个代码块分别执行，输出目录独立。
+模型、数据、精度、seed、预算和停止协议应保持一致，仅 Adapter 不同。
+SFT 命令默认加载步骤 5 完整训练的最终 Adapter；若 Adapter 位于其他目录，请替换路径。
+
+Base：IID Test 13 个。
+
+```python
+%cd /kaggle/working/RecoveryAgent
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_test --output outputs/kaggle_base_iid_test
+```
+
+Base：OOD 18 个。
+
+```python
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split ood --output outputs/kaggle_base_ood
+```
+
+SFT：IID Test 13 个。
+
+```python
+!python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter outputs/qwen3_1.7b_oracle_lora/adapter --split iid_test --output outputs/kaggle_sft_iid_test
+```
+
+SFT：OOD 18 个。
+
+```python
+!python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter outputs/qwen3_1.7b_oracle_lora/adapter --split ood --output outputs/kaggle_sft_ood
+```
+
+若已完成 SFT，只需重新执行第 1 节环境配置，并确保 Base 挂载、数据、Adapter 与预检
+就绪，即可运行上述评测，无需重新训练。仅有 Adapter 时仍需同一完整 Base 模型。
+
+另有 **IID Validation 13 个**，用于训练配置/Checkpoint 选择，不计入正式 31 个测试任务。
+先在 Validation 确定配置，冻结选择后再评测 IID Test/OOD，勿用正式测试集选择超参数。
+
+```python
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_validation --output outputs/kaggle_base_iid_validation
+```
+
+```python
+!python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter outputs/qwen3_1.7b_oracle_lora/adapter --split iid_validation --output outputs/kaggle_sft_iid_validation
+```
+
+## 7. Kaggle 输出位置、保存与恢复
+
+所有默认写入都在可写的 `/kaggle/working/RecoveryAgent/`；模型挂载的 `/kaggle/input/` 只读。
+代码写入磁盘不等于已持久保存；Git 提交也不会自动收录训练产物。
+
+| 产物 | 默认位置（相对仓库根目录） |
+| --- | --- |
+| CPU Dry-run 报告 | `outputs/kaggle_oracle_cpu_dryrun/dry_run_report.json` |
+| Base Smoke 报告与轨迹 | `outputs/kaggle_base_train_smoke/` |
+| 完整训练日志、配置和报告 | `outputs/qwen3_1.7b_oracle_lora/`：`train_metrics.jsonl`、`training_config.json`、`run_contract.json`、`data_manifest.json`、`gpu_preflight.json`、`training_report.json` |
+| 最终 LoRA Adapter | `outputs/qwen3_1.7b_oracle_lora/adapter/`：Adapter 权重、配置及归属/哈希元数据 |
+| 可恢复训练 checkpoint | `checkpoints/qwen3_1.7b_oracle_lora/step-XXXXXX/`：Adapter、optimizer/scheduler/RNG/cursor 状态和校验元数据 |
+| Base 正式测试 | `outputs/kaggle_base_iid_test/`、`outputs/kaggle_base_ood/` |
+| SFT 正式测试 | `outputs/kaggle_sft_iid_test/`、`outputs/kaggle_sft_ood/` |
+
+评测目录包含 `benchmark_report.json`（最终指标）、`trajectories.jsonl`（逐任务轨迹）、
+`tasks.jsonl`、`session.json`、`report.json` 和 `termination_diagnostics.jsonl`。
+运行未完成时可能尚无最终报告；轨迹逐任务写入。相同评测恢复使用原命令加 `--resume`，
+否则选择新目录。训练默认每 10 次更新及最后一步保存 checkpoint；意外终止可能丢失
+最近一次完整 checkpoint 之后的更新。仅保存最终 Adapter 足以评测，不足以恢复优化器训练。
+
+在 Kaggle 界面使用 **Save Version** 保存版本及其 Output；如选择 **Save & Run All**，
+会重新执行 Notebook，请避免再次写入已有实验目录。仅交互运行的文件不应视为已永久保存，
+会话结束前请确认版本 Output 中已有产物，或下载备份。也可将版本 Output 作为 Dataset
+挂载到后续 Notebook，挂载后位于只读 `/kaggle/input/`；恢复训练时将所需产物复制回可写目录。
+
+训练/评测结束后可打包输出与 checkpoint，生成独立归档（不包含 Base 模型与缓存）：
+
+```python
+%cd /kaggle/working/RecoveryAgent
+!tar -czf /kaggle/working/recoveryagent_run_bundle.tar.gz -C /kaggle/working/RecoveryAgent outputs checkpoints
+```
+
+通过 Kaggle 文件/Output 面板下载归档，或显示下载链接：
+
+```python
+%cd /kaggle/working
+from IPython.display import FileLink, display
+display(FileLink("recoveryagent_run_bundle.tar.gz"))
+```
+
+后续会话将归档上传为 Dataset 后，按实际挂载位置替换路径，解压到已克隆仓库再恢复运行：
+
+```python
+%cd /kaggle/working/RecoveryAgent
+# 将占位路径换成实际归档位置；仅恢复到没有冲突的运行目录。
+!tar -xzf /kaggle/input/YOUR_DATASET/recoveryagent_run_bundle.tar.gz -C /kaggle/working/RecoveryAgent
+```
+
+checkpoint 及归档可能较大，需留意磁盘余量；确认备份后再清理。无需将 Base 权重复制到
+`/kaggle/working`，也不要将大型训练产物直接提交进代码仓库。
+
 ## 本地核验边界
 
 更新到最新 `main` 并恢复原始文件字节后，相关测试 **15 passed**；
