@@ -48,3 +48,10 @@ Base 配置 Dry-run、SFT 文件检查、训练 Dry-run、GPU 预检与 Base Smo
 `%cd`、`!git`、`!python`、`%env`。环境变量保存在 Notebook 内核，
 避免 `!source` 的子进程变量丢失；预检与推理拆分，并增加 Python 断言。
 原 Bash `set -euo pipefail` 不再出现在 Notebook 命令块中。
+
+## 正式评测、SFT 与产物保存说明
+
+运行指南新增完整 Oracle LoRA-SFT、checkpoint 恢复、Base/Adapter 各 31 个正式测试任务
+以及独立 Validation 命令。补充 Kaggle 输出位置、版本 Output 保存、归档下载与跨会话恢复，
+区分最终 Adapter 与带 optimizer 状态的训练 checkpoint。所有示例保留 Notebook 语法；
+本轮为文档变更，未执行真实 GPU 训练或正式测试。

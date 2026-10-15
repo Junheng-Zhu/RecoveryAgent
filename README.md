@@ -1088,6 +1088,10 @@ Accelerate 1.6.0；Tokenizer 栈沿用 v0.4-A 版本。
 [PEFT model loading](https://huggingface.co/docs/peft/v0.15.0/en/package_reference/peft_model)、
 [Transformers gradient checkpointing](https://huggingface.co/docs/transformers/v4.51.3/en/main_classes/model)。
 
+正式测试是 IID Test 13 + OOD 18，共 31 个任务；Base/SFT 各跑一遍。
+完整 Notebook 命令、训练恢复及 Kaggle Output 保存/下载说明见
+[运行指南第 5–7 节](docs/kaggle_dry_run_base_smoke.md#5-完整-lora-sft-训练)。
+
 ### B.2 Base / Adapter 对照
 
 `evaluate_local_model.py` 默认 `--execution dry-run`；真实推理必须显式 `--execution gpu`。
