@@ -24,33 +24,63 @@ SFT 六个文件：`oracle_sft.jsonl`、`teacher_sft.jsonl`、`source_audit.json
 
 ## 1. 克隆、配置与依赖
 
-Kaggle 启用 GPU 和 Internet（克隆/安装时需要）；Notebook 通过 `%%bash` 执行下列 Bash。
-**每个新 Bash cell 都要重新 `cd` 和 `source`，环境变量不会跨 cell 保留。**
-以下克隆命令用于首次启动；已有仓库时跳过克隆，不覆盖现有数据或运行输出。
+Kaggle 启用 GPU 和 Internet（克隆/安装时需要）。以下代码块直接粘贴到默认
+**Python Notebook 单元格**，每个代码块作为一个单元格，按顺序执行。
+`%cd` 修改 Notebook 工作目录，`!` 执行终端命令，`%env` 将环境变量保留给后续单元格。
+不要在 Python 单元格中直接写 `set -euo pipefail` 或 `source`；`!source` 也不会将变量保留到下一条命令。
 
-```bash
-set -euo pipefail
-cd /kaggle/working
-git clone https://github.com/Junheng-Zhu/RecoveryAgent.git RecoveryAgent
-cd /kaggle/working/RecoveryAgent
-source configs/gpu_server.env.example
-python -m pip install -r requirements-gpu.txt
-python scripts/setup_gpu_workspace.py
+首次克隆（已有仓库则跳过此单元格）：
+
+```python
+%cd /kaggle/working
+!git clone https://github.com/Junheng-Zhu/RecoveryAgent.git RecoveryAgent
 ```
 
-该环境示例面向 Kaggle。其他 Linux 服务器应另设 `RECOVERY_MODEL_PATH`、
+配置当前 Notebook 内核（重启内核后重新执行）：
+
+```python
+%cd /kaggle/working/RecoveryAgent
+import os
+os.environ.pop("RECOVERY_DATA_ROOT", None)
+%env RECOVERY_MODEL_PATH=/kaggle/input/models/zhuzhu135/qwen3-1-7b/transformers/default/3
+%env RECOVERY_DATASET_PATH=/kaggle/working/RecoveryAgent/data
+%env RECOVERY_SFT_PATH=/kaggle/working/RecoveryAgent/data/v0.4a_training_readiness
+%env RECOVERY_FROZEN_PATH=/kaggle/working/RecoveryAgent/data/v0.3b_seed42_final
+%env RECOVERY_OUTPUT_PATH=/kaggle/working/RecoveryAgent/outputs
+%env RECOVERY_CHECKPOINT_PATH=/kaggle/working/RecoveryAgent/checkpoints
+%env RECOVERY_TOKENIZER_PATH=/kaggle/input/models/zhuzhu135/qwen3-1-7b/transformers/default/3
+%env RECOVERY_CACHE_PATH=/kaggle/working/RecoveryAgent/cache/huggingface
+%env RECOVERY_DELIVERY_MANIFEST=/kaggle/working/RecoveryAgent/data/delivery_manifest.json
+%env HF_HOME=/kaggle/working/RecoveryAgent/cache/huggingface
+%env HF_HUB_OFFLINE=1
+%env TRANSFORMERS_OFFLINE=1
+%env USE_TORCH=1
+%env USE_TF=0
+%env USE_FLAX=0
+%env CUDA_VISIBLE_DEVICES=0
+```
+
+安装完成后检查输出；安装失败时不要继续下一格：
+
+```python
+!python -m pip install -r requirements-gpu.txt
+```
+
+```python
+!python scripts/setup_gpu_workspace.py
+```
+
+上述配置面向 Kaggle。Linux Terminal 使用普通 Bash 命令时，可运行
+`source configs/gpu_server.env.example`；Notebook 使用上面的 `%env` 配置。其他 Linux 服务器应另设 `RECOVERY_MODEL_PATH`、
 `RECOVERY_TOKENIZER_PATH` 为真实模型目录；数据默认跟随实际仓库位置。
 GPU 环境须与固定 Torch/CUDA 依赖兼容。BF16 为默认，T4/P100 等 GPU 不支持时，
 明确选择 float32 并重新检查显存；不能把 BF16 预检失败视为成功。
 
 ## 2. Base 配置 Dry-run（不加载权重、不执行推理）
 
-```bash
-set -euo pipefail
-cd /kaggle/working/RecoveryAgent
-source configs/gpu_server.env.example
-python scripts/evaluate_local_model.py \
-  --execution dry-run --model-mode base --split train_smoke
+```python
+%cd /kaggle/working/RecoveryAgent
+!python scripts/evaluate_local_model.py --execution dry-run --model-mode base --split train_smoke
 ```
 
 预期输出 `status: EVALUATION_CONFIG_ONLY`、`tasks: 3`、
@@ -58,17 +88,25 @@ python scripts/evaluate_local_model.py \
 
 ## 3. 训练数据 Dry-run（使用仓库已有 SFT）
 
-```bash
-set -euo pipefail
-cd /kaggle/working/RecoveryAgent
-source configs/gpu_server.env.example
-# 检查克隆得到的文件；缺失或不匹配时立即停止。
-for name in oracle_sft.jsonl teacher_sft.jsonl source_audit.json token_stats.json mask_examples.json readiness_report.md; do
-  test -s "$RECOVERY_SFT_PATH/$name"
-done
-python scripts/setup_gpu_workspace.py --write-delivery
-python scripts/train_qwen3_lora.py \
-  --mode dry-run --output outputs/kaggle_oracle_cpu_dryrun
+```python
+%cd /kaggle/working/RecoveryAgent
+from pathlib import Path
+sft = Path(os.environ["RECOVERY_SFT_PATH"])
+required = ["oracle_sft.jsonl", "teacher_sft.jsonl", "source_audit.json",
+            "token_stats.json", "mask_examples.json", "readiness_report.md"]
+missing = [name for name in required
+           if not (sft / name).is_file() or (sft / name).stat().st_size == 0]
+assert not missing, f"缺少或为空的 SFT 文件：{missing}"
+```
+
+文件检查通过后执行清单验证；失败时停止，不执行下一格：
+
+```python
+!python scripts/setup_gpu_workspace.py --write-delivery
+```
+
+```python
+!python scripts/train_qwen3_lora.py --mode dry-run --output outputs/kaggle_oracle_cpu_dryrun
 ```
 
 预期 `CPU_DATA_DRY_RUN_PASSED`，Oracle 204 条、Teacher 独立校验。
@@ -80,14 +118,19 @@ python scripts/train_qwen3_lora.py \
 此入口的 `LocalEngine` 同样检查 SFT、tokenizer 与 GPU 路径，因此也需先完成步骤 3。
 这是在三个冻结 Train 任务上运行真实 Base 推理与工具链，不更新参数。
 
-```bash
-set -euo pipefail
-cd /kaggle/working/RecoveryAgent
-source configs/gpu_server.env.example
-python scripts/check_gpu_environment.py --output outputs/kaggle_gpu_preflight.json
-python scripts/evaluate_local_model.py \
-  --execution gpu --model-mode base --split train_smoke \
-  --output outputs/kaggle_base_train_smoke
+```python
+%cd /kaggle/working/RecoveryAgent
+!python scripts/check_gpu_environment.py --output outputs/kaggle_gpu_preflight.json
+```
+
+下一格确认预检通过，再执行真实推理；断言失败时停止：
+
+```python
+import json
+from pathlib import Path
+preflight = json.loads(Path("outputs/kaggle_gpu_preflight.json").read_text())
+assert preflight["gpu_verified"] and not preflight["blockers"], preflight["blockers"]
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split train_smoke --output outputs/kaggle_base_train_smoke
 ```
 
 预检须 `gpu_verified: true`、`blockers: []`；退出码 2 时停止。

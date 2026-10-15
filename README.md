@@ -1044,26 +1044,42 @@ GPU One-step 只在 `--mode smoke` 执行；完整训练只在 `--mode train` �
 
 ### Kaggle GPU 启动
 
-先从你的 GitHub 仓库克隆代码到 `/kaggle/working/RecoveryAgent`，并在 Kaggle Notebook
-添加上述 Qwen3 模型、启用 GPU。以下命令在 Bash 中运行（Notebook 可用 `%%bash`）：
+在 Kaggle Notebook 的默认 Python 单元格中使用 `%cd`、`!git`、`!python`，
+不要直接粘贴 Bash 的 `set` / `source`。先按
+[运行指南](docs/kaggle_dry_run_base_smoke.md) 完成克隆、`%env` 环境配置和依赖安装，
+再分别执行以下单元格：
 
-```bash
-cd /kaggle/working/RecoveryAgent
-source configs/gpu_server.env.example
-python -m pip install -r requirements-gpu.txt
-python scripts/setup_gpu_workspace.py
-# data/v0.4a_training_readiness 六个文件和交付清单已随仓库提供。
-# 只有补齐原始 Oracle/Teacher 证据后才可从头准备：
-# python scripts/prepare_qwen3_sft.py --max-seq-length 8192
-python scripts/setup_gpu_workspace.py --write-delivery
-python scripts/train_qwen3_lora.py --mode dry-run
-python scripts/check_gpu_environment.py --output outputs/gpu_preflight.json
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split train_smoke --output outputs/base_train_smoke
-python scripts/train_qwen3_lora.py --mode smoke
-# 预检和 Smoke 通过后执行完整训练。
-python scripts/train_qwen3_lora.py --mode train
-# 中断后从最近完整 checkpoint 恢复。
-python scripts/train_qwen3_lora.py --mode train --resume checkpoints/qwen3_1.7b_oracle_lora/step-000020
+```python
+%cd /kaggle/working/RecoveryAgent
+!python scripts/setup_gpu_workspace.py --write-delivery
+```
+
+```python
+!python scripts/train_qwen3_lora.py --mode dry-run
+```
+
+```python
+!python scripts/check_gpu_environment.py --output outputs/gpu_preflight.json
+```
+
+确认预检 `gpu_verified: true`、`blockers: []` 后：
+
+```python
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split train_smoke --output outputs/base_train_smoke
+```
+
+其余训练命令也逐格执行，并确认上一格成功后继续：
+
+```python
+!python scripts/train_qwen3_lora.py --mode smoke
+```
+
+```python
+!python scripts/train_qwen3_lora.py --mode train
+```
+
+```python
+!python scripts/train_qwen3_lora.py --mode train --resume checkpoints/qwen3_1.7b_oracle_lora/step-000020
 ```
 
 训练依赖固定于 `requirements-gpu.txt`：Torch 2.7.1、Transformers 4.51.3、PEFT 0.15.2、
@@ -1092,16 +1108,16 @@ temperature=0（greedy）、seed=42；实际每任务仍受冻结 max_recovery_s
 Base/Adapter 除权重外必须同配置，并使用独立输出目录。允许 `--resume`，禁止覆盖旧运行。
 从 adapter 最终目录或完整 step checkpoint 可独立加载 Base+Adapter，校验 Base/Tokenizer 归属。
 
-```bash
+```python
 # IID Validation 13 个，用于配置/Checkpoint 选择；不同 checkpoint 选新目录。
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_validation --output /kaggle/working/RecoveryAgent/outputs/base_iid_validation
-python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split iid_validation --output /kaggle/working/RecoveryAgent/outputs/sft_iid_validation
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_validation --output /kaggle/working/RecoveryAgent/outputs/base_iid_validation
+!python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split iid_validation --output /kaggle/working/RecoveryAgent/outputs/sft_iid_validation
 
 # 冻结已选配置后独立评测 IID Test 13、OOD Test 18，不用来训练/选超参/调 Prompt。
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_test --output /kaggle/working/RecoveryAgent/outputs/base_iid_test
-python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split iid_test --output /kaggle/working/RecoveryAgent/outputs/sft_iid_test
-python scripts/evaluate_local_model.py --execution gpu --model-mode base --split ood --output /kaggle/working/RecoveryAgent/outputs/base_ood
-python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split ood --output /kaggle/working/RecoveryAgent/outputs/sft_ood
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split iid_test --output /kaggle/working/RecoveryAgent/outputs/base_iid_test
+!python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split iid_test --output /kaggle/working/RecoveryAgent/outputs/sft_iid_test
+!python scripts/evaluate_local_model.py --execution gpu --model-mode base --split ood --output /kaggle/working/RecoveryAgent/outputs/base_ood
+!python scripts/evaluate_local_model.py --execution gpu --model-mode adapter --adapter /kaggle/working/RecoveryAgent/outputs/qwen3_1.7b_oracle_lora/adapter --split ood --output /kaggle/working/RecoveryAgent/outputs/sft_ood
 ```
 
 新增 `benchmark_report.json` 给出任务级轨迹、分机制 numerator/denominator、Final/Ever/

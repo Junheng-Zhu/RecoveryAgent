@@ -41,3 +41,10 @@ Base 配置 Dry-run、SFT 文件检查、训练 Dry-run、GPU 预检与 Base Smo
 所有字节精确匹配既有交付清单，未改清单哈希。相关测试 15 passed；
 训练 Dry-run 返回 CPU_DATA_DRY_RUN_PASSED。现有导出无需重建，只有主动
 重建才依赖未提交的原始可信轨迹。Kaggle GPU Base Smoke 仍待实际硬件验证。
+
+## Notebook 命令格式更正
+
+运行指南及 README 的 Kaggle 示例改用默认 Python 单元格语法：
+`%cd`、`!git`、`!python`、`%env`。环境变量保存在 Notebook 内核，
+避免 `!source` 的子进程变量丢失；预检与推理拆分，并增加 Python 断言。
+原 Bash `set -euo pipefail` 不再出现在 Notebook 命令块中。
