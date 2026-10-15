@@ -36,11 +36,10 @@ def create_delivery(workspace, output):
     if stats["status"] != "verified" or not audit["original_sources_unchanged"]:
         raise ValueError("v0.4-A is not verified")
     files = []
-    for cohort, directory, names, destination in (
-        ("frozen", workspace.frozen, [p.name for p in workspace.frozen.iterdir() if p.is_file()],
-         "datasets/recovery_agent/v0.3b_seed42_final"),
-        ("sft", workspace.sft, SFT_FILES, "datasets/recovery_agent/v0.4a_training_readiness"),
-        ("tokenizer", workspace.tokenizer, TOKENIZER_FILES, "models/Qwen3-1.7B")):
+    for cohort, directory, names in (
+        ("frozen", workspace.frozen, [p.name for p in workspace.frozen.iterdir() if p.is_file()]),
+        ("sft", workspace.sft, SFT_FILES),
+        ("tokenizer", workspace.tokenizer, TOKENIZER_FILES)):
         for name in sorted(names):
             p = directory/name
             if not p.is_file():
@@ -48,7 +47,7 @@ def create_delivery(workspace, output):
             files.append({"cohort": cohort, "name": name, "size": p.stat().st_size,
                           "sha256": sha256(p), "source": str(p.relative_to(workspace.project))
                           if p.is_relative_to(workspace.project) else str(p),
-                          "server_destination": "/data/"+destination+"/"+name})
+                          "server_destination": str(directory/name)})
     manifest = {"version": "v0.4-B", "first_training_source": "oracle",
                 "dataset_version": "0.3-B", "preparation_version": "v0.4-A",
                 "files": files, "tokenizer": stats["tokenizer"], "template": stats["template"],

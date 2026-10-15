@@ -4,6 +4,8 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 
+KAGGLE_MODEL_PATH = Path("/kaggle/input/models/zhuzhu135/qwen3-1-7b/transformers/default/3")
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def project_path(value, project_root=PROJECT_ROOT):
@@ -29,7 +31,7 @@ class WorkspacePaths:
 
     @classmethod
     def from_env(cls, environ=None, project_root=PROJECT_ROOT):
-        """Existing Windows defaults stay in the project; /data layout requires explicit opt-in."""
+        """Repository data defaults work after cloning; legacy /data layout requires explicit opt-in."""
         env = os.environ if environ is None else environ
         project = Path(project_root).resolve()
         storage = project_path(env["RECOVERY_DATA_ROOT"], project) if env.get("RECOVERY_DATA_ROOT") else None
@@ -39,16 +41,17 @@ class WorkspacePaths:
         datasets = choose("RECOVERY_DATASET_PATH", "data", "datasets/recovery_agent")
         outputs = choose("RECOVERY_OUTPUT_PATH", "outputs", "outputs/recovery_agent")
         checkpoints = choose("RECOVERY_CHECKPOINT_PATH", "checkpoints", "checkpoints/recovery_agent")
-        model = choose("RECOVERY_MODEL_PATH", "models/Qwen3-1.7B", "models/Qwen3-1.7B")
+        model = project_path(env.get("RECOVERY_MODEL_PATH") or (
+            storage/"models/Qwen3-1.7B" if storage else KAGGLE_MODEL_PATH), project)
         cache = choose("RECOVERY_CACHE_PATH", "cache/huggingface", "cache/huggingface")
         # CPU data validation can use the existing tokenizer-only directory, never weights.
         tokenizer = project_path(env.get("RECOVERY_TOKENIZER_PATH") or (
             model if storage else project/"assets/tokenizers/Qwen3-1.7B"), project)
         sft = project_path(env.get("RECOVERY_SFT_PATH") or (
-            datasets/"v0.4a_training_readiness" if storage else project/"outputs/v0.4a_training_readiness"), project)
+            datasets/"v0.4a_training_readiness" if storage else datasets/"v0.4a_training_readiness"), project)
         frozen = project_path(env.get("RECOVERY_FROZEN_PATH") or datasets/"v0.3b_seed42_final", project)
         delivery = project_path(env.get("RECOVERY_DELIVERY_MANIFEST") or (
-            datasets/"delivery_manifest.json" if storage else project/"outputs/v0.4b_delivery/delivery_manifest.json"), project)
+            datasets/"delivery_manifest.json" if storage else datasets/"delivery_manifest.json"), project)
         value = cls(project, storage, datasets, outputs, checkpoints, model, cache, tokenizer, sft, frozen, delivery)
         if storage:
             for name in ("datasets", "outputs", "checkpoints", "model", "cache", "tokenizer", "sft", "frozen", "delivery"):
@@ -62,6 +65,9 @@ class WorkspacePaths:
     def initialize(self):
         """Idempotent directory creation only; never copy, migrate or replace data."""
         for directory in (self.datasets, self.outputs, self.checkpoints, self.model, self.cache):
+            # Kaggle mounted model weights are read-only inputs.
+            if directory == self.model and directory.is_relative_to(Path("/kaggle/input")):
+                continue
             directory.mkdir(parents=True, exist_ok=True)
             writable(directory)
         return self.public()

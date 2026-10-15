@@ -11,7 +11,7 @@ from recovery_agent.paths import WorkspacePaths, project_path
 def main():
     """Offline by default; downloading public tokenizer files is an explicit separate choice."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=WorkspacePaths.from_env().outputs/"v0.4a_training_readiness")
+    parser.add_argument("--output", type=Path, default=WorkspacePaths.from_env().sft)
     parser.add_argument("--tokenizer", default=str(WorkspacePaths.from_env().tokenizer),
                         help="Official Hugging Face tokenizer model ID or local directory")
     parser.add_argument("--revision", default=None, help="Pin the HF tokenizer repository commit")
